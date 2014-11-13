@@ -13,7 +13,7 @@ __How it works:__ `main.R` looks in the `R` subdirectory and sources all the R f
 
 After the `clean.R` cleans and transforms the data for use, the data object is saved as `data/master.Rdata`. Any extensions should access that data file and not overwrite it. If you need to modify data and save it to be accessed by other scripts, please save the file as something else. I know this isn't the most robust way of maintaining data state, but it's simpler than passing data objects between scripts in `R` and `main.R`.
 
-### Dependencies
+## Dependencies
 
  * lubridate
  * gdata
