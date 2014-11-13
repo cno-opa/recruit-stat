@@ -1,6 +1,7 @@
 #geocall.R
 #helper functions to get more descriptive geographies from ZIP codes
 
+#TODO: PROFIT
 
 require(jsonlite)
 require(RCurl)
