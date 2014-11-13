@@ -3,3 +3,9 @@
 ## To do
 
 ## Usage
+
+### Dependencies
+
+ * lubridate
+ * gdata
+ * stringr
