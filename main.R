@@ -12,3 +12,6 @@ init <- function(subdir) {
 init("R")
 init_geocall() #clean.R requires geocall.R
 init_clean()
+
+#communiques
+init_comms()
