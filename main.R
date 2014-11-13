@@ -7,3 +7,6 @@ init <- function(subdir) {
   Rfiles <- list.files(subdir, pattern = "*.R", full.names = TRUE)
   sapply(Rfiles, source)
 }
+
+#sequence
+init_clean()
