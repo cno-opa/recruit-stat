@@ -3,7 +3,7 @@
 ## To do
 
  * Figure out geocall conundrum. Use historical data maybe?
- * Is passing data through master .Rdata file?
+ * Is passing data through master.Rdata file smart?
 
 ## Usage
 
