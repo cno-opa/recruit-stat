@@ -2,6 +2,7 @@
 #Cleans and transforms data for easier use
 #Requires geocall.R -- see main.R initiation sequence
 
+#TODO: figure out how to use past geocalls, or get the city to pay $5 a month for the API service :(
 
 require(lubridate)
 require(gdata)
@@ -38,9 +39,10 @@ init_clean <- function() {
 
   d$month_applied <- paste0( month(d$date_applied, label = TRUE), " ", year(d$date_applied) )
 
-  d$geo <- geoloop(d$zip)
+  #d$geo <- geoloop(d$zip)
 
-  write.csv(d, "./output/data-cleaned.csv", row.names = FALSE)
+  save(d, file = "./data/master.Rdata")
+  write.csv( d, "./output/data-cleaned.csv", row.names = FALSE )
 
   #
   #end init_clean
