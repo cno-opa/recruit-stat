@@ -1,11 +1,13 @@
-#!usr/bin/Rscript
+#clean.R
 #Cleans and transforms data for easier use
+#Requires geocall.R -- see main.R initiation sequence
+
 
 require(lubridate)
 require(gdata)
 require(stringr)
 
-#wrap in fn so scripts can be called in order
+
 init_clean <- function() {
   #
   #
@@ -24,6 +26,8 @@ init_clean <- function() {
   names(d) <- slugify( names(d) )
 
   levels(d$sex) <- c( "F", "M", "M", "U" )
+  d$identifier <- gsub( ",", "", d$identifier )
+  d$identifier <- as.numeric(d$identifier)
 
   #make some useful bins
   age_brks <- c( "18", "20", "25", "30", "35", "40", "45", "50", "60", "70" )
@@ -34,7 +38,9 @@ init_clean <- function() {
 
   d$month_applied <- paste0( month(d$date_applied, label = TRUE), " ", year(d$date_applied) )
 
-  
+  d$geo <- geoloop(d$zip)
+
+  write.csv(d, "./output/data-cleaned.csv", row.names = FALSE)
 
   #
   #end init_clean
