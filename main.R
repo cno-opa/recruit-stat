@@ -9,4 +9,6 @@ init <- function(subdir) {
 }
 
 #sequence
+init("R")
+init_geocall() #clean.R requires geocall.R
 init_clean()
