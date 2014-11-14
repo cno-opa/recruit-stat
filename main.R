@@ -8,10 +8,11 @@ init <- function(subdir) {
   sapply(Rfiles, source)
 }
 
-#sequence
+#sequence of script executions
 init("R")
-init_geocall() #clean.R requires geocall.R
+init_geocall()
 init_clean()
+init_analysis()
 
 #communiques
 init_comms()
