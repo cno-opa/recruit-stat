@@ -3,6 +3,8 @@
 
 #TODO: make tables for: individual step yields (month), CS pipeline, applicantion rates and geographies, CS timeliness, exam attendance rates
 
+require(plyr)
+
 init_analysis() {
   #
   #
@@ -36,15 +38,47 @@ init_analysis() {
                       passAgility = agil_pass)
 
   #summarize step yield size and proportion by time period
-  success_table <- function(l, lower_limit = "2013-12-01", upper_limit = "2014-10-31") {
-    s <- subset( l, ymd(l$date_applied) > ymd(lower_limit) & ymd(l$date_applied) < ymd(upper_limit) )
+  success_table <- function(l, lower_limit = "2013-12-01", upper_limit = max(ymd(d$date_applied))) {
+    s <- subset( l, ymd(l$date_applied) >= ymd(lower_limit) & ymd(l$date_applied) <= ymd(upper_limit) )
     nrow(s)
   }
 
 
   #fn calls
-  #step yields
-  step_baseline <- sapply(step_yields, success_table, lower_limit = "2014-01-01", upper_limit = "2014-06-01")
+
+  #step yields -- note: this calculates three points in time to compare: the baseline and the previous two complete months
+  make_step_table <- function() {
+    #set months to compare to baseline
+    mx <- day( max(ymd(d$date_applied)) )
+
+    if(mx > 25) {
+      current <- month( max(ymd(d$date_applied)) )
+    } else {
+      current <- month( max(ymd(d$date_applied)) ) - 1
+    }
+
+    prev <- current - 1
+
+    #set lower and upper limits for prev and current
+    current_l <- paste( year(max(ymd(d$date_applied))), current, "01", sep = "-" )
+    current_u <- paste( year(max(ymd(d$date_applied))), current, days_in_month(current), sep = "-" )
+
+    prev_l <- paste( year(max(ymd(d$date_applied))), prev, "01", sep = "-" )
+    prev_u <- paste( year(max(ymd(d$date_applied))), prev, days_in_month(prev), sep = "-" )
+
+    #get tables of successful applicants for each step for each time period
+    step_baseline <- as.data.frame(sapply(step_yields, success_table, lower_limit = "2014-01-01", upper_limit = "2014-05-31"))
+      colnames(step_baseline) <- "Baseline"
+    step_prev <- as.data.frame(sapply(step_yields, success_table, lower_limit = prev_l, upper_limit = prev_u))
+      colnames(step_prev) <- month(prev, label = TRUE)
+    step_current <- as.data.frame(sapply(step_yields, success_table, lower_limit = current_l, upper_limit = current_u))
+      colnames(step_current) <- month(current, label = TRUE)
+
+    #combine
+    step_success_table <- cbind(step_baseline, step_prev, step_current)
+
+    return(step_success_table)
+  }
 
   #
   #
