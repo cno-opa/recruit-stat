@@ -29,7 +29,7 @@ init_analysis() {
                       docsSubmitted = docs,
                       scheduleMC = mc,
                       attendMC = mc_attend,
-                      passmMC = mc_pass,
+                      passMC = mc_pass,
                       scheduleWE = we,
                       attendWE = we_attend,
                       passWE = we_pass,
@@ -42,9 +42,6 @@ init_analysis() {
     s <- subset( l, ymd(l$date_applied) >= ymd(lower_limit) & ymd(l$date_applied) <= ymd(upper_limit) )
     nrow(s)
   }
-
-
-  #fn calls
 
   #step yields -- note: this calculates three points in time to compare: the baseline and the previous two complete months
   make_step_table <- function() {
@@ -79,6 +76,10 @@ init_analysis() {
 
     return(step_success_table)
   }
+
+  #fn calls
+  step_success_table <- make_step_table()
+
 
   #
   #
