@@ -14,7 +14,7 @@ init_clean <- function() {
   #
 
   #load and clean
-  d <- read.xls( "./data/AllDataOct31.xls", na.strings = c("", "#N/A", "NA", "#DIV/0!") )
+  d <- read.xls( "./data/AllDataNov13.xls", na.strings = c("", "#N/A", "NA", "#DIV/0!") )
   d$X <- NULL
   d$X.1 <- NULL
   d$X.2 <- NULL
@@ -32,6 +32,7 @@ init_clean <- function() {
 
   #make some useful bins
   age_brks <- c( "18", "20", "25", "30", "35", "40", "45", "50", "60", "70" )
+  d$age <- as.numeric((ymd(today()) - ymd(d$age))/365)
   d$age_group <- cut( d$age, age_brks )
   d$age_group <- gsub( "\\(", "", d$age_group )
   d$age_group <- gsub( "]", "", d$age_group )
