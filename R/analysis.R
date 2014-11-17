@@ -5,7 +5,7 @@
 
 require(plyr)
 
-init_analysis() {
+init_analysis <- function() {
   #
   #
 

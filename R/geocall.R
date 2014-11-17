@@ -8,7 +8,7 @@ require(RCurl)
 require(stringr)
 
 
-init_geocall() {
+init_geocall <- function() {
   #
   #
 
