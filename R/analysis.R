@@ -1,9 +1,8 @@
 #analysis.R
 #performs various analyses on cleaned data
 
-#TODO: make tables for: individual step yields (month), CS pipeline, applicantion rates and geographies, CS timeliness, exam attendance rates
+#TODO: calculate proportion table in non-naive manner for mc test attendance
 
-require(plyr)
 
 init_analysis <- function() {
   #
@@ -95,7 +94,7 @@ init_analysis <- function() {
   #fn calls
   step_success_table <- make_step_table()
   step_success_prop_table <- make_step_prop_table(step_success_table)
-  
+
 
   #
   #
