@@ -12,8 +12,8 @@ init_analysis <- function() {
   load("./data/master.Rdata")
 
   #create subsets of successful groups at each step
-  qual <- subset(d, disposition != "Not qualified")
-  docs <- subset (qual, disposition != "Documents Needed")
+  qual <- subset(d, disposition != "not qualified")
+  docs <- subset (qual, disposition != "documents needed")
   mc <- subset (docs, !is.na(written_test))
   mc_attend <- subset(mc, m_c__result == "P" | m_c__result == "F")
   mc_pass <- subset(mc_attend, m_c__result == "P")
@@ -77,9 +77,25 @@ init_analysis <- function() {
     return(step_success_table)
   }
 
+  make_step_prop_table <- function(x) {
+      r <- nrow(x)
+      calc_prop <- function(col) {
+        l <- list()
+        for(i in seq(2, r, 1)) {
+          prop <- col[i]/col[i-1]
+          l <- append(l, prop)
+        }
+        return(l)
+      }
+      t <- as.data.frame(sapply(x, calc_prop))
+      row.names(t) <- row.names(step_success_table[2:12,])
+      return(t)
+  }
+
   #fn calls
   step_success_table <- make_step_table()
-
+  step_success_prop_table <- make_step_prop_table(step_success_table)
+  
 
   #
   #
