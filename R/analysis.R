@@ -9,6 +9,14 @@ init_analysis <- function() {
   #
   #
 
+  #utility functions
+  month_str2num <- function(str) {
+    str <- tolower(str)
+    months <- list("jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec")
+    match(str, months)
+  }
+  
+  #load
   load("./data/master.Rdata")
 
   #create subsets of successful groups at each step
@@ -37,14 +45,15 @@ init_analysis <- function() {
                       attendAgility = agil_attend,
                       passAgility = agil_pass)
 
-  #summarize step yield size and proportion by time period
-  success_table <- function(l, lower_limit = "2013-12-01", upper_limit = max(ymd(d$date_applied))) {
-    s <- subset( l, ymd(l$date_applied) >= ymd(lower_limit) & ymd(l$date_applied) <= ymd(upper_limit) )
-    nrow(s)
-  }
-
   #step yields -- note: this calculates three points in time to compare: the baseline and the previous two complete months
   make_step_table <- function() {
+
+    #fn to summarize step yield size and proportion by time period
+    success_table <- function(l, lower_limit = "2013-12-01", upper_limit = max(ymd(d$date_applied))) {
+      s <- subset( l, ymd(l$date_applied) >= ymd(lower_limit) & ymd(l$date_applied) <= ymd(upper_limit) )
+      nrow(s)
+    }
+
     #set months to compare to baseline
     mx <- day( max(ymd(d$date_applied)) )
 
@@ -79,49 +88,41 @@ init_analysis <- function() {
 
   make_step_prop_table <- function(x) {
 
-      #makes naive step table
-      r <- nrow(x)
-      calc_prop <- function(col) {
-        l <- list()
-        for(i in seq(2, r, 1)) {
-          prop <- col[i]/col[i-1]
-          l <- append(l, prop)
-        }
-        return(l)
+    #makes naive step table
+    calc_prop <- function(col) {
+      l <- list()
+      for(i in seq(2, r, 1)) {
+        prop <- col[i]/col[i-1]
+        l <- append(l, prop)
       }
-      t <- as.data.frame(sapply(x, calc_prop))
-      row.names(t) <- row.names(step_success_table[2:12,])
+      return(l)
+    }
 
-      #make prop table that calculates attendance proportion only by applicants who have test scheduled before end of reporting period
-      make_aware <- function(t, x) {
-        mx <- max(ymd(d$date_applied))
-        prev <- paste("2014", month_str2num( colnames(x)[2] ) , "01", sep = "-")
-        current <- paste("2014", month_str2num( colnames(x)[3] ) , "01", sep = "-")
+    #make prop table that calculates attendance proportion only by applicants who have test scheduled before end of reporting period
+    make_aware <- function(a, b) {
+      mx <- max(ymd(d$date_applied))
+      prev <- paste("2014", month_str2num( colnames(b)[2] ) , "01", sep = "-")
+      current <- paste("2014", month_str2num( colnames(b)[3] ) , "01", sep = "-")
 
-        t[4,2] <- x[5,2]/nrow( as.data.frame(step_yields[4])[ymd(unlist(as.data.frame(step_yields[4])[2])) >= ymd(prev) & ymd(unlist(as.data.frame(step_yields[4])[2])) < ymd(current) & ymd(unlist(as.data.frame(step_yields[4])[4])) < ymd(mx), ] )
-        t[4,3] <- x[5,3]/nrow( as.data.frame(step_yields[4])[ymd(unlist(as.data.frame(step_yields[4])[2])) >= ymd(current) & ymd(unlist(as.data.frame(step_yields[4])[4])) < ymd(mx), ] )
+      a[4,2] <- b[5,2]/nrow( as.data.frame(step_yields[4])[ymd(unlist(as.data.frame(step_yields[4])[2])) >= ymd(prev) & ymd(unlist(as.data.frame(step_yields[4])[2])) < ymd(current) & ymd(unlist(as.data.frame(step_yields[4])[4])) < ymd(mx), ] )
+      a[4,3] <- b[5,3]/nrow( as.data.frame(step_yields[4])[ymd(unlist(as.data.frame(step_yields[4])[2])) >= ymd(current) & ymd(unlist(as.data.frame(step_yields[4])[4])) < ymd(mx), ] )
 
-        t[10,2] <- x[11,2]/nrow( as.data.frame(step_yields[10])[ymd(unlist(as.data.frame(step_yields[10])[2])) >= ymd(prev) & ymd(unlist(as.data.frame(step_yields[10])[2])) < ymd(current) & ymd(unlist(as.data.frame(step_yields[10])[8])) < ymd(mx), ] )
-        t[10,3] <- x[11,3]/nrow( as.data.frame(step_yields[10])[ymd(unlist(as.data.frame(step_yields[10])[2])) >= ymd(current) & ymd(unlist(as.data.frame(step_yields[10])[8])) < ymd(mx), ] )
+      a[10,2] <- b[11,2]/nrow( as.data.frame(step_yields[10])[ymd(unlist(as.data.frame(step_yields[10])[2])) >= ymd(prev) & ymd(unlist(as.data.frame(step_yields[10])[2])) < ymd(current) & ymd(unlist(as.data.frame(step_yields[10])[8])) < ymd(mx), ] )
+      a[10,3] <- b[11,3]/nrow( as.data.frame(step_yields[10])[ymd(unlist(as.data.frame(step_yields[10])[2])) >= ymd(current) & ymd(unlist(as.data.frame(step_yields[10])[8])) < ymd(mx), ] )
 
-        return(t)
-      }
+      return(a)
+    }
 
-      t <- make_aware(t,x)
-      return(t)
+    r <- nrow(x)
+    t <- as.data.frame(sapply(x, calc_prop))
+    row.names(t) <- row.names(step_success_table[2:12,])
+    t <- make_aware(t,x)
+    return(t)
   }
-
 
   #fn calls
   step_success_table <- make_step_table()
   step_success_prop_table <- make_step_prop_table(step_success_table)
-
-  #utility functions
-  month_str2num <- function(str) {
-    str <- tolower(str)
-    months <- list("jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec")
-    match(str, months)
-  }
 
   #
   #
