@@ -3,6 +3,7 @@
 
 #TODO: calculate proportion table in non-naive manner for mc test attendance
 
+require(lubridate)
 
 init_analysis <- function() {
   #
@@ -77,6 +78,8 @@ init_analysis <- function() {
   }
 
   make_step_prop_table <- function(x) {
+
+      #makes naive step table
       r <- nrow(x)
       calc_prop <- function(col) {
         l <- list()
@@ -88,13 +91,37 @@ init_analysis <- function() {
       }
       t <- as.data.frame(sapply(x, calc_prop))
       row.names(t) <- row.names(step_success_table[2:12,])
+
+      #make prop table that calculates attendance proportion only by applicants who have test scheduled before end of reporting period
+      make_aware <- function(t, x) {
+        mx <- max(ymd(d$date_applied))
+        prev <- paste("2014", month_str2num( colnames(x)[2] ) , "01", sep = "-")
+        current <- paste("2014", month_str2num( colnames(x)[3] ) , "01", sep = "-")
+
+        t[4,2] <- x[5,2]/nrow( as.data.frame(step_yields[4])[ymd(unlist(as.data.frame(step_yields[4])[2])) >= ymd(prev) & ymd(unlist(as.data.frame(step_yields[4])[2])) < ymd(current) & ymd(unlist(as.data.frame(step_yields[4])[4])) < ymd(mx), ] )
+        t[4,3] <- x[5,3]/nrow( as.data.frame(step_yields[4])[ymd(unlist(as.data.frame(step_yields[4])[2])) >= ymd(current) & ymd(unlist(as.data.frame(step_yields[4])[4])) < ymd(mx), ] )
+
+        t[10,2] <- x[11,2]/nrow( as.data.frame(step_yields[10])[ymd(unlist(as.data.frame(step_yields[10])[2])) >= ymd(prev) & ymd(unlist(as.data.frame(step_yields[10])[2])) < ymd(current) & ymd(unlist(as.data.frame(step_yields[10])[8])) < ymd(mx), ] )
+        t[10,3] <- x[11,3]/nrow( as.data.frame(step_yields[10])[ymd(unlist(as.data.frame(step_yields[10])[2])) >= ymd(current) & ymd(unlist(as.data.frame(step_yields[10])[8])) < ymd(mx), ] )
+
+        return(t)
+      }
+
+      t <- make_aware(t,x)
       return(t)
   }
+
 
   #fn calls
   step_success_table <- make_step_table()
   step_success_prop_table <- make_step_prop_table(step_success_table)
 
+  #utility functions
+  month_str2num <- function(str) {
+    str <- tolower(str)
+    months <- list("jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec")
+    match(str, months)
+  }
 
   #
   #
