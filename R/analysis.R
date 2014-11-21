@@ -1,7 +1,7 @@
 #analysis.R
 #performs various analyses on cleaned data
 
-#TODO: calculate proportion table in non-naive manner for mc test attendance
+#TODO: make prop table generator fn less ugly
 
 require(lubridate)
 
