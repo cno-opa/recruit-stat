@@ -141,6 +141,7 @@ init_analysis <- function() {
     colnames(we_outcomes) <- c("date", "scheduled", "attended", "passed")
   we_outcomes_prop <- div_by_left(we_outcomes)
 
+  median_days_to_mc <- ddply(d, "written_test", "summarise", med = median(days_to_mc))
 
   #
   #
