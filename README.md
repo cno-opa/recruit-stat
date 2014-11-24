@@ -4,6 +4,7 @@
 
  * Figure out geocall conundrum. Use historical data maybe?
  * Is passing data through master.Rdata file smart?
+ * Decide if stdin is the best way to incorporate NOPD data
 
 ## Usage
 
@@ -20,4 +21,5 @@ After the `clean.R` cleans and transforms the data for use, the data object is s
  * stringr
  * jsonlite
  * RCurl
+ * ggplot2
  * plyr
