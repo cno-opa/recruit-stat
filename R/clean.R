@@ -41,6 +41,9 @@ init_clean <- function() {
 
   d$month_applied <- paste0( month(d$date_applied, label = TRUE), " ", year(d$date_applied) )
 
+  d$days_to_mc <- as.numeric( (ymd(d$written_test) - ymd(d$date_applied)), units = "days" )
+  d$days_to_mc[d$days_to_mc < 0] <- NA
+
   #d$geo <- geoloop(d$zip)
 
   save(d, file = "./data/master.Rdata")
