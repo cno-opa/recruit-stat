@@ -4,6 +4,7 @@
 #TODO: make prop table generator fn less ugly
 
 require(lubridate)
+require(plyr)
 
 init_analysis <- function() {
   #
@@ -15,7 +16,15 @@ init_analysis <- function() {
     months <- list("jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec")
     match(str, months)
   }
-  
+
+  div_by_left <- function(table) {
+    p <- table
+    for(i in seq(3, ncol(table), 1)) {
+      p[,i] <- table[,i]/table[,i - 1]
+    }
+    return(p)
+  }
+
   #load
   load("./data/master.Rdata")
 
@@ -45,7 +54,7 @@ init_analysis <- function() {
                       attendAgility = agil_attend,
                       passAgility = agil_pass)
 
-  #step yields -- note: this calculates three points in time to compare: the baseline and the previous two complete months
+  #step yields. this calculates three points in time to compare: the baseline and the previous two complete months. month is considered "complete" if more than 25 days have passed
   make_step_table <- function() {
 
     #fn to summarize step yield size and proportion by time period
@@ -123,6 +132,15 @@ init_analysis <- function() {
   #fn calls
   step_success_table <- make_step_table()
   step_success_prop_table <- make_step_prop_table(step_success_table)
+
+  mc_outcomes <- join_all(list( count(mc$written_test), count(mc_attend$written_test), count(mc_pass$written_test) ), by = "x")
+    colnames(mc_outcomes) <- c("date", "scheduled", "attended", "passed")
+  mc_outcomes_prop <- div_by_left(mc_outcomes)
+
+  we_outcomes <- join_all(list( count(we$writing_exercise), count(we_attend$writing_exercise), count(we_pass$writing_exercise) ), by = "x")
+    colnames(we_outcomes) <- c("date", "scheduled", "attended", "passed")
+  we_outcomes_prop <- div_by_left(we_outcomes)
+
 
   #
   #
