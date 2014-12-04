@@ -132,6 +132,7 @@ init_analysis <- function() {
   #fn calls
   step_success_table <- make_step_table()
   step_success_prop_table <- make_step_prop_table(step_success_table)
+    step_success_prop_table <- as.data.frame(lapply(step_success_prop_table, unlist))
 
   mc_outcomes <- join_all(list( count(mc$written_test), count(mc_attend$written_test), count(mc_pass$written_test) ), by = "x")
     colnames(mc_outcomes) <- c("date", "scheduled", "attended", "passed")
@@ -142,6 +143,9 @@ init_analysis <- function() {
   we_outcomes_prop <- div_by_left(we_outcomes)
 
   median_days_to_mc <- ddply(d, "written_test", "summarise", med = median(days_to_mc))
+
+    #summarise(group_by(d, written_test), all = median(days_to_mc), attendees = median(days_to_mc[!is.na(m_c__result)]), absentees = median(days_to_mc[is.na(m_c__result)]))
+
 
   #
   #
