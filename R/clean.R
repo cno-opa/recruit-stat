@@ -14,7 +14,7 @@ init_clean <- function() {
   #
 
   #load and clean
-  d <- read.xls( "./data/AllDataNov13.xls", na.strings = c("", "#N/A", "NA", "#DIV/0!") )
+  d <- read.xls( "./data/AllDataNov25.xls", na.strings = c("", "#N/A", "NA", "#DIV/0!") )
   d$X <- NULL
   d$X.1 <- NULL
   d$X.2 <- NULL
