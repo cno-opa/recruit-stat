@@ -2,7 +2,6 @@
 
 ## To do
 
- * Run geocall only for applicants from most recent two months
  * Is passing data through master.Rdata file smart?
  * Decide if stdin is the best way to incorporate NOPD data
 

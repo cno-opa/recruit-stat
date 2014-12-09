@@ -10,7 +10,6 @@ init <- function(subdir) {
 
 #sequence of script executions
 init("R")
-init_geocall()
 init_clean()
 init_analysis()
 

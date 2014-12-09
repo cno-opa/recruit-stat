@@ -2,7 +2,7 @@
 #Cleans and transforms data for easier use
 #Requires geocall.R -- see main.R initiation sequence
 
-#TODO: figure out how to use past geocalls, or get the city to pay $5 a month for the API service :(
+#TODO: PROFIT
 
 require(lubridate)
 require(gdata)
@@ -44,7 +44,10 @@ init_clean <- function() {
   d$days_to_mc <- as.numeric( (ymd(d$written_test) - ymd(d$date_applied)), units = "days" )
   d$days_to_mc[d$days_to_mc < 0] <- NA
 
-  #d$geo <- geoloop(d$zip)
+  #initialize and execute geocall for most recent two months worth of applicants in lieu of full d$geo <- geoloop(d$zip)
+  d$geo <- NA
+  cutoff <- max(ymd(d$date_applied)) - days(62)
+  d$geo[ymd(d$date_applied) > cutoff] <- geoloop( d$zip[ymd(d$date_applied) > cutoff] )
 
   save(d, file = "./data/master.Rdata")
   write.csv( d, "./output/data-cleaned.csv", row.names = FALSE )
