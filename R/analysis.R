@@ -4,7 +4,7 @@
 #TODO: make prop table generator fn less ugly
 
 require(lubridate)
-require(plyr)
+require(dplyr)
 
 init_analysis <- function() {
   #
@@ -142,9 +142,7 @@ init_analysis <- function() {
     colnames(we_outcomes) <- c("date", "scheduled", "attended", "passed")
   we_outcomes_prop <- div_by_left(we_outcomes)
 
-  median_days_to_mc <- ddply(d, "written_test", "summarise", med = median(days_to_mc))
-
-    #summarise(group_by(d, written_test), all = median(days_to_mc), attendees = median(days_to_mc[!is.na(m_c__result)]), absentees = median(days_to_mc[is.na(m_c__result)]))
+  median_days_to_mc <- summarise( group_by(d, written_test), all = median(days_to_mc), attendees = median(days_to_mc[m_c__result == "F" | m_c__result == "P"], na.rm = TRUE ), absentees = median(days_to_mc[is.na(m_c__result) | m_c__result == "A"], na.rm = TRUE) )
 
 
   #
