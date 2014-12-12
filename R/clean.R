@@ -51,7 +51,7 @@ init_clean <- function() {
   d$geo <- as.character(d$geo)
 
   save(d, file = "./data/master.Rdata")
-  write.csv( d, "./output/data-cleaned.csv", row.names = FALSE )
+  write.csv( d, paste("./output/data-cleaned", Sys.Date(), ".csv"), row.names = FALSE )
 
   #
   #end init_clean
