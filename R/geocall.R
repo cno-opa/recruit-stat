@@ -40,7 +40,7 @@ geoloop <- function(zips) {
 
   for(zip in zips) {
     geo <- append(geo, geocall(zip))
-    cat( style( paste("Geocoding", zip), fg = 208 ) )
+    cat( style( paste("Geocoding", zip, "\n"), fg = 208 ) )
   }
 
   return(geo)
