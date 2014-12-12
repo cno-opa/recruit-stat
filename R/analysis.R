@@ -1,7 +1,7 @@
 #analysis.R
 #performs various analyses on cleaned data
 
-#TODO: make prop table generator fn less ugly
+#TODO: make prop table generator fn less ugly. find way to not harcode list of data tables in env
 
 require(lubridate)
 require(dplyr)
@@ -134,16 +134,48 @@ init_analysis <- function() {
   step_success_prop_table <- make_step_prop_table(step_success_table)
     step_success_prop_table <- as.data.frame(lapply(step_success_prop_table, unlist))
 
-  mc_outcomes <- join_all(list( count(mc$written_test), count(mc_attend$written_test), count(mc_pass$written_test) ), by = "x")
-    colnames(mc_outcomes) <- c("date", "scheduled", "attended", "passed")
+  mc_outcomes <- left_join( tally(group_by(mc, written_test)), tally(group_by(mc_attend, written_test)), by = "written_test") %.%
+    left_join( tally(group_by(mc_pass, written_test)), by = "written_test" )
+
+  colnames(mc_outcomes) <- c("date", "scheduled", "attended", "passed")
   mc_outcomes_prop <- div_by_left(mc_outcomes)
 
-  we_outcomes <- join_all(list( count(we$writing_exercise), count(we_attend$writing_exercise), count(we_pass$writing_exercise) ), by = "x")
-    colnames(we_outcomes) <- c("date", "scheduled", "attended", "passed")
+  we_outcomes <- left_join( tally(group_by(we, writing_exercise)), tally(group_by(we_attend, writing_exercise)), by = "writing_exercise") %.%
+    left_join( tally(group_by(we_pass, writing_exercise)), by = "writing_exercise")
+
+  colnames(we_outcomes) <- c("date", "scheduled", "attended", "passed")
   we_outcomes_prop <- div_by_left(we_outcomes)
 
   median_days_to_mc <- summarise( group_by(d, written_test), all = median(days_to_mc), attendees = median(days_to_mc[m_c__result == "F" | m_c__result == "P"], na.rm = TRUE ), absentees = median(days_to_mc[is.na(m_c__result) | m_c__result == "A"], na.rm = TRUE) )
 
+  save(list = ls(), file = "./data/analysis-obj.Rdata")
+
+  #this should not be hardcoded, but how to get the fns out of ls()?
+  my_tables <- list(step_success_table,
+                    step_success_prop_table,
+                    mc_outcomes,
+                    mc_outcomes_prop,
+                    we_outcomes,
+                    we_outcomes_prop,
+                    median_days_to_mc)
+
+  my_tables_names <- c("step_success_table",
+                      "step_success_prop_table",
+                      "mc_outcomes",
+                      "mc_outcomes_prop",
+                      "we_outcomes",
+                      "we_outcomes_prop",
+                      "median_days_to_mc")
+
+  cat( style( "Save the following tables as CSVs? (y/n)", fg = 208), style(my_tables_names, fg = 069), sep = "\n" )
+  save_r <- readLines("stdin", 1, warn=FALSE)
+
+  if(save_r == "y" | save_r == "Y") {
+    for(i in seq(1, length(my_tables))) {
+      fpath = paste("./output/", my_tables_names[i], Sys.Date(), ".csv" )
+      write.csv(my_tables[i], fpath, row.names = FALSE)
+    }
+  }
 
   #
   #
