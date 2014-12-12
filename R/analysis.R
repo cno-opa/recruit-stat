@@ -178,5 +178,5 @@ init_analysis <- function() {
   }
 
   #
-  #
+  #end init_analysis
 }
