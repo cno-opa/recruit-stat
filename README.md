@@ -2,6 +2,7 @@
 
 ## To do
 
+ * Plotting
  * Is passing data through master.Rdata file smart?
  * Decide if stdin is the best way to incorporate NOPD data
 
