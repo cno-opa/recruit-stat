@@ -88,9 +88,10 @@ init_analysis <- function() {
       colnames(step_prev) <- month(prev, label = TRUE)
     step_current <- as.data.frame(sapply(step_yields, success_table, lower_limit = current_l, upper_limit = current_u))
       colnames(step_current) <- month(current, label = TRUE)
+    steps <- row.names(step_baseline)
 
     #combine
-    step_success_table <- cbind(step_baseline, step_prev, step_current)
+    step_success_table <- cbind(steps, step_baseline, step_prev, step_current)
 
     return(step_success_table)
   }
@@ -132,7 +133,9 @@ init_analysis <- function() {
   #fn calls
   step_success_table <- make_step_table()
   step_success_prop_table <- make_step_prop_table(step_success_table)
+    step_success_prop_table$steps <- row.names(step_success_prop_table)
     step_success_prop_table <- as.data.frame(lapply(step_success_prop_table, unlist))
+
 
   mc_outcomes <- left_join( tally(group_by(mc, written_test)), tally(group_by(mc_attend, written_test)), by = "written_test") %.%
     left_join( tally(group_by(mc_pass, written_test)), by = "written_test" )
