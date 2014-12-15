@@ -7,6 +7,10 @@
  * Is passing data through master.Rdata file smart?
  * Decide if stdin is the best way to incorporate NOPD data
 
+## Important!
+
+This script assumes that the data tables are consistently formatted. Sometimes CS randomly changes column names and order. This can break the routine. It would be possible to run a troubleshoot script at the beginning of this routine that checked for proper data formatting, but a human can do that, too.
+
 ## Usage
 
 Make sure all the packages listed in __Dependencies__ (see below) are installed on your machine and then run `main.R`.
