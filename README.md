@@ -2,6 +2,7 @@
 
 ## To do
 
+ * Fn to list Excel files in data dir and give user option of choosing which one to load
  * Plotting
  * Is passing data through master.Rdata file smart?
  * Decide if stdin is the best way to incorporate NOPD data
