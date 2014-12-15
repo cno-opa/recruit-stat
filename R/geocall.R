@@ -6,6 +6,7 @@
 require(jsonlite)
 require(RCurl)
 require(stringr)
+require(xtermStyle)
 
 geocall <- function(zip) {
   api_key <- "AIzaSyDb2JQ9Cllc4476oInOXZU4CLUUzOS3-bc"
