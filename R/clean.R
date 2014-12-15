@@ -14,7 +14,7 @@ init_clean <- function() {
   #
 
   #load and clean
-  d <- read.xls( "./data/AllDataDec12.xls", na.strings = c("", "#N/A", "NA", "#DIV/0!") )
+  d <- read.xls( "./data/AllDataDec12.xls", na.strings = c("", "#N/A", "NA", "#DIV/0!"), strip.white = TRUE )
   d$X <- NULL
   d$X.1 <- NULL
   d$X.2 <- NULL
@@ -24,8 +24,13 @@ init_clean <- function() {
     return( gsub('(_)$|^(_)', '', col_names) )
   }
 
-  names(d) <- slugify( names(d) )
+  trim <- function (x) gsub("^\\s+|\\s+$", "", x)
 
+  names(d) <- slugify( names(d) )
+  d$disposition <- trim(d$disposition)
+  d$m_c__result <- trim(d$m_c__result)
+  d$w_e__result <- trim(d$w_e__result)
+  d$agility_result <- trim(d$agility_result)
   levels(d$sex) <- c( "F", "M", "M", "U" )
   d$identifier <- gsub( ",", "", d$identifier )
   d$identifier <- as.numeric(d$identifier)
