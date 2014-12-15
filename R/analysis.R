@@ -88,10 +88,9 @@ init_analysis <- function() {
       colnames(step_prev) <- month(prev, label = TRUE)
     step_current <- as.data.frame(sapply(step_yields, success_table, lower_limit = current_l, upper_limit = current_u))
       colnames(step_current) <- month(current, label = TRUE)
-    steps <- row.names(step_baseline)
 
     #combine
-    step_success_table <- cbind(steps, step_baseline, step_prev, step_current)
+    step_success_table <- cbind(step_baseline, step_prev, step_current)
 
     return(step_success_table)
   }
