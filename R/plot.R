@@ -41,7 +41,7 @@ apps <- as.data.frame( table(d$month_applied) )
   apps$month <- factor(apps$month, levels = m_order)
 
 ggplot(data = apps, aes(x = month, y = applications, group = 1, label = applications)) +
-  geom_line( colour = "steelblue", size = 1) +
+  geom_line( colour = "#225A98", size = 1) +
   geom_text( size = 3, vjust = -.9, hjust = 1 ) +
   theme(axis.text.x = element_text(angle = 45, hjust = .97)) +
   labs( title = "Applications by month", x = "Month", y = "Applications" ) +
