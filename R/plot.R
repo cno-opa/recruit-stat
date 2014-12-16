@@ -6,6 +6,7 @@
 require(ggplot2)
 require(scales)
 require(reshape2)
+require(xtermStyle)
 
 init_plot <- function() {
 #
