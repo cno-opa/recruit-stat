@@ -7,6 +7,7 @@ require(ggplot2)
 require(scales)
 require(reshape2)
 require(xtermStyle)
+require(lubridate)
 
 init_plot <- function() {
 #
@@ -29,6 +30,23 @@ ggplot(data = steps, aes(x = steps, y = value, fill = variable)) +
   ggsave("./output/rel-steps.png", width = 10, height = 5.5)
   cat( style( "Saving individual step yields histogram...", fg = 208) )
 
+#applications and applicant geographies
+apps <- as.data.frame( table(d$month_applied) )
+  dimnames(apps)[[2]] <- c("month", "applications")
+  d <- d[order(ymd(d$date_applied)),]
+  m_order <- unique(d$month_applied)
+  m_order <- append(m_order, c("Jun 2013", "Jul 2013", "Aug 2013", "Sep 2013", "Oct 2013", "Nov 2013"), after = 0) #add in historical months
+  h <- data.frame( month = c("Jun 2013", "Jul 2013", "Aug 2013", "Sep 2013", "Oct 2013", "Nov 2013"), applications = c(44,45,36,26,44,70)) #actual historical data
+  apps <- rbind(h, apps)
+  apps$month <- factor(apps$month, levels = m_order)
+
+ggplot(data = apps, aes(x = month, y = applications, group = 1, label = applications)) +
+  geom_line( colour = "steelblue", size = 1) +
+  geom_text( size = 3, vjust = -.9, hjust = 1 ) +
+  theme(axis.text.x = element_text(angle = 45, hjust = .97)) +
+  labs( title = "Applications by month", x = "Month", y = "Applications" ) +
+  ggsave("./output/apps.png", width = 10, height = 5.5)
+  cat( style( "Saving application line chart...", fg = 208) )
 
 
 #
