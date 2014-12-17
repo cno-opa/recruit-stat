@@ -53,7 +53,7 @@ init_clean <- function() {
   d$geo <- NA
   cutoff <- max(ymd(d$date_applied)) - days(62)
   d$geo[ymd(d$date_applied) > cutoff] <- geoloop( d$zip[ymd(d$date_applied) > cutoff] )
-  d$geo <- as.character(d$geo)
+  d$geo <- unlist(d$geo)
 
   save(d, file = "./data/master.Rdata")
   write.csv( d, paste("./output/data-cleaned", Sys.Date(), ".csv"), row.names = FALSE )
