@@ -14,7 +14,7 @@ init_clean <- function() {
   #
 
   #load and clean
-  d <- read.xls( "./data/AllDataDec12.xls", na.strings = c("", "#N/A", "NA", "#DIV/0!"), strip.white = TRUE )
+  d <- read.xls( "./data/AllDataJan5.xls", na.strings = c("", "#N/A", "NA", "#DIV/0!"), strip.white = TRUE )
   d$X <- NULL
   d$X.1 <- NULL
   d$X.2 <- NULL
@@ -27,6 +27,9 @@ init_clean <- function() {
   trim <- function (x) gsub("^\\s+|\\s+$", "", x)
 
   names(d) <- slugify( names(d) )
+  if( names(d)[1] == "id") {
+    names(d)[1] <- "identifier"
+  }
   d$disposition <- trim(d$disposition)
   d$m_c__result <- trim(d$m_c__result)
   d$w_e__result <- trim(d$w_e__result)
@@ -38,7 +41,7 @@ init_clean <- function() {
 
   #make some useful bins
   age_brks <- c( "18", "20", "25", "30", "35", "40", "45", "50", "60", "70" )
-  d$age <- as.numeric((ymd(today()) - ymd(d$age))/365)
+  #d$age <- as.numeric((ymd(today()) - ymd(d$age))/365) <= CS changed from DOB to calculated age
   d$age_group <- cut( d$age, age_brks )
   d$age_group <- gsub( "\\(", "", d$age_group )
   d$age_group <- gsub( "]", "", d$age_group )
@@ -54,6 +57,15 @@ init_clean <- function() {
   cutoff <- max(ymd(d$date_applied)) - days(62)
   d$geo[ymd(d$date_applied) > cutoff] <- geoloop( d$zip[ymd(d$date_applied) > cutoff] )
   d$geo <- unlist(d$geo)
+
+  #pull in geodata from base data file, join to d, and save new data to base
+  load("./data/geo-base.Rdata")
+  m <- merge(d, base, by = "identifier", all.x = TRUE)
+  for(i, seq(1, nrow(m)) {
+    if(d$geo[1] == NA) {
+
+    }
+  }
 
   save(d, file = "./data/master.Rdata")
   write.csv( d, paste("./output/data-cleaned", Sys.Date(), ".csv"), row.names = FALSE )
