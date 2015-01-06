@@ -30,8 +30,8 @@ init_analysis <- function() {
 
   #create subsets of successful groups at each step
   qual <- subset(d, disposition != "not qualified")
-  docs <- subset (qual, disposition != "documents needed")
-  mc <- subset (docs, !is.na(written_test))
+  docs <- subset(qual, disposition != "documents needed")
+  mc <- subset(docs, !is.na(written_test))
   mc_attend <- subset(mc, m_c__result == "P" | m_c__result == "F")
   mc_pass <- subset(mc_attend, m_c__result == "P")
   we <- subset(mc_pass, !is.na(writing_exercise))
