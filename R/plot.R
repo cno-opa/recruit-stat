@@ -48,6 +48,8 @@ ggplot(data = apps, aes(x = month, y = applications, group = 1, label = applicat
   ggsave("./output/apps.png", width = 10, height = 5.5)
   cat( style( "Saving application line chart...", fg = 208) )
 
+#geography of applicants
+w_geos <- subset(d, !is.na(geo))
 
 #
 #end init_plot
