@@ -5,6 +5,7 @@
  * Fn to list Excel files in data dir and give user option of choosing which one to load
  * Plotting
  * Decide if stdin is the best way to incorporate NOPD data
+ * Step table building between two years (new year problem)
 
 ## Important!
 

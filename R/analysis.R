@@ -70,6 +70,9 @@ init_analysis <- function() {
       current <- month( max(ymd(d$date_applied)) )
     } else {
       current <- month( max(ymd(d$date_applied)) ) - 1
+      if(current == 0) {
+        current <- 12
+      }
     }
 
     prev <- current - 1
