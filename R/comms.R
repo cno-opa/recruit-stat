@@ -1,10 +1,10 @@
 #spits some stuff out at the end of main.R's execution
 
 init_comms <- function() {
-  #
-  #
+#
+#
 
-  flag <- "\n\nFINISHED\n\n
+flag <- "\n\nFINISHED\n\n
 |* * * * * * * * * * OOOOOOOOOOOOOOOOOOOOOOOOO|
 | * * * * * * * * *  :::::::::::::::::::::::::|
 |* * * * * * * * * * OOOOOOOOOOOOOOOOOOOOOOOOO|
@@ -19,8 +19,8 @@ init_comms <- function() {
 |:::::::::::::::::::::::::::::::::::::::::::::|
 |OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO|\n\n"
 
-  cat(flag)
+cat(flag)
 
-  #
-  #
+#
+#
 }
