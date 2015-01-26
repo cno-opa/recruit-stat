@@ -12,7 +12,7 @@ This script assumes that the data tables are consistently formatted. Sometimes C
 
 ## Usage
 
-Make sure all the packages listed in __Dependencies__ (see below) are installed on your machine and then run `main.R`.
+Make sure all the packages listed in __Dependencies__ (see below) are installed on your machine and then run `main.R`. This looks for Excel files in a `data` directory and writes output to a `output` one, so make sure you have those.
 
 __How it works:__ `main.R` looks in the `R` subdirectory and sources all the R files in there. It then executes those files in a sequence explicitly declared in `main.R`. If you extend this bundle of scripts, make sure you add a call to execute any new files you add to `R` or any other subdirectory, and execute these new scripts _after_ any scripts they depend on.
 
