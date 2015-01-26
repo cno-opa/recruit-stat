@@ -28,3 +28,4 @@ After the `clean.R` cleans and transforms the data for use, the data object is s
  * ggplot2
  * dplyr
  * scales
+ * xtermStyle
