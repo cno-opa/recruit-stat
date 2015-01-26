@@ -66,23 +66,31 @@ make_step_table <- function() {
   #set months to compare to baseline
   mx <- day( max(ymd(d$date_applied)) )
 
+  # if(mx > 25) {
+  #   current <- month( max(ymd(d$date_applied)) )
+  # } else {
+  #   current <- month( max(ymd(d$date_applied)) ) - 1
+  #   if(current == 0) {
+  #     current <- 12
+  #   }
+  # }
+  #
+  # prev <- current - 1
+
   if(mx > 25) {
-    current <- month( max(ymd(d$date_applied)) )
+    current <- max(ymd(d$date_applied))
   } else {
-    current <- month( max(ymd(d$date_applied)) ) - 1
-    if(current == 0) {
-      current <- 12
-    }
+    current <- seq(max(ymd(d$date_applied)), length = 2, by = "-1 month")[2]
   }
 
-  prev <- current - 1
+  prev <- seq(current, length = 2, by = "-1 month")[2]
 
   #set lower and upper limits for prev and current
-  current_l <- paste( year(max(ymd(d$date_applied))), current, "01", sep = "-" )
-  current_u <- paste( year(max(ymd(d$date_applied))), current, days_in_month(current), sep = "-" )
+  current_l <- paste( year(current), month(current), "01", sep = "-" )
+  current_u <- paste( year(current), month(current), days_in_month(month(current)), sep = "-" )
 
-  prev_l <- paste( year(max(ymd(d$date_applied))), prev, "01", sep = "-" )
-  prev_u <- paste( year(max(ymd(d$date_applied))), prev, days_in_month(prev), sep = "-" )
+  prev_l <- paste( year(prev), month(prev), "01", sep = "-" )
+  prev_u <- paste( year(prev), month(prev), days_in_month(month(prev)), sep = "-" )
 
   #get tables of successful applicants for each step for each time period
   step_baseline <- as.data.frame(sapply(step_yields, success_table, lower_limit = "2014-01-01", upper_limit = "2014-05-31"))
