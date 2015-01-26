@@ -5,6 +5,7 @@
 
 require(lubridate)
 require(dplyr)
+require(xtermStyle)
 
 init_analysis <- function() {
 #
