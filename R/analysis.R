@@ -67,17 +67,6 @@ make_step_table <- function() {
   #set months to compare to baseline
   mx <- day( max(ymd(d$date_applied)) )
 
-  # if(mx > 25) {
-  #   current <- month( max(ymd(d$date_applied)) )
-  # } else {
-  #   current <- month( max(ymd(d$date_applied)) ) - 1
-  #   if(current == 0) {
-  #     current <- 12
-  #   }
-  # }
-  #
-  # prev <- current - 1
-
   if(mx > 25) {
     current <- max(ymd(d$date_applied))
   } else {
