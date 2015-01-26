@@ -6,6 +6,7 @@
  * Plotting
  * Decide if stdin is the best way to incorporate NOPD data
  * Step table building between two years (new year problem)
+ * Regression models
 
 ## Important!
 
