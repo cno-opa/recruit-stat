@@ -2,6 +2,6 @@
 .Rhistory
 .RData
 .DS_Store
-*.Rproj
+.Rproj
 data/*
 output/*
