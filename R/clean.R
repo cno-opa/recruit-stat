@@ -69,15 +69,6 @@ cutoff <- max(ymd(d$date_applied)) - days(62)
 d$geo[ymd(d$date_applied) > cutoff] <- geoloop( d$zip[ymd(d$date_applied) > cutoff] )
 d$geo <- unlist(d$geo)
 
-#pull in geodata from base data file, join to d, and save new data to base
-# load("./data/geo-base.Rdata")
-# m <- merge(d, base, by = "identifier", all.x = TRUE)
-# for(i, seq(1, nrow(m)) {
-#   if(d$geo[1] == NA) {
-#
-#   }
-# }
-
 save(d, file = "./data/master.Rdata")
 write.csv( d, paste("./output/data-cleaned", Sys.Date(), ".csv"), row.names = FALSE )
 

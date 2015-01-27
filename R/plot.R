@@ -15,6 +15,7 @@ init_plot <- function() {
 #
 
 load("./data/analysis-obj.Rdata")
+load("./data/geobase.Rdata")
 
 #data transformation for plotting
 step_titles <- factor( c("Qualified", "Submitted documents", "Scheduled MC", "Attended MC", "Passed MC", "Scheduled WE", "Attended WE", "Passed WE", "Scheduled Agility", "Attended Agility", "Passed Agility"), levels = c("Qualified", "Submitted documents", "Scheduled MC", "Attended MC", "Passed MC", "Scheduled WE", "Attended WE", "Passed WE", "Scheduled Agility", "Attended Agility", "Passed Agility") )
@@ -74,7 +75,7 @@ ggplot(data = apps, aes(x = month, y = applications, group = 1, label = applicat
   cat( style( "Saving application line chart...", fg = 208) )
 
 #geography of applicants
-w_geos <- subset(d, !is.na(geo))
+
 
 #
 #end init_plot
