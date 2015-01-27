@@ -1,11 +1,12 @@
 # Regression modelling of applicant success
 
-Some predictors are categorical, some ordinal (e.g. age). Response is binary.
-
+First version of model will focus just on CS test performance and overall process performance. A second version should look deeply at performance in NOPD background investigation process. The goal is to identify a set of characteristics which significantly predict applicant success overall, and at specific bottlenecks in the process.
 
 ## TODO:
 
-Research which logistic model is best fit for working with mixed predictor variable types.
+* Meet with CS to determine what data are available
+* List variable types
+* Research appropriate regression model to use. What model can comprehensively consider two responses, success and time?
 
 ## Predictor variables
 
@@ -13,7 +14,7 @@ Research which logistic model is best fit for working with mixed predictor varia
   * Race
   * Gender
   * Location:
-    * Urban/rural
+    * Urban/suburban/rural
     * Region
     * GNO vs NO vs other LA
   * Education:
@@ -22,7 +23,14 @@ Research which logistic model is best fit for working with mixed predictor varia
     * School ranking
   * Previous work experience
   * Military experience
+  * Extracurricular activities
 
-## Response variables
+## Response variable
 
- * Success or failure, overall and at individual steps
+ * Success or failure, estimated at various steps:
+  * Overall
+  * Document submission
+  * MC test attendance
+  * MC test passage
+  * WE test passage
+ * Time to completion
