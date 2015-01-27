@@ -14,9 +14,9 @@ init_clean <- function() {
 #
 
 #let user choose data file
-f <- list.files("~/Projects/recruit-stat/data", pattern = "*.xls")
+f <- list.files("./data", pattern = "*.xls")
 
-cat( style("Enter the number next to the Excel file you want to use: \n \n test", fg = 208) )
+cat( style("Enter the number next to the Excel file you want to use: \n \n", fg = 208) )
 for(i in 1:length(f)) {
   cat( style(paste(i, f[i]), fg = 069), sep = "\n" )
 }
