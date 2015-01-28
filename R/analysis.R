@@ -86,9 +86,9 @@ make_step_table <- function() {
   step_baseline <- as.data.frame(sapply(step_yields, success_table, lower_limit = "2014-01-01", upper_limit = "2014-05-31"))
     colnames(step_baseline) <- "Baseline"
   step_prev <- as.data.frame(sapply(step_yields, success_table, lower_limit = prev_l, upper_limit = prev_u))
-    colnames(step_prev) <- month(prev, label = TRUE)
+    colnames(step_prev) <- paste( month(prev, label = TRUE), year(prev) )
   step_current <- as.data.frame(sapply(step_yields, success_table, lower_limit = current_l, upper_limit = current_u))
-    colnames(step_current) <- month(current, label = TRUE)
+    colnames(step_current) <- paste( month(current, label = TRUE), year(current) )
 
   #combine
   step_success_table <- cbind(step_baseline, step_prev, step_current)
