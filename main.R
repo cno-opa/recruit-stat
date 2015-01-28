@@ -15,7 +15,7 @@ init <- function(subdir) {
 init("R")
 init_clean()
 init_analysis()
-#init_plot()
+init_plot()
 
 #final communiques
 init_comms()
