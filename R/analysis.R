@@ -27,9 +27,9 @@ div_by_left <- function(table) {
 }
 
 properize <- function(str) {
-    s <- strsplit(str, " ")[[1]]
-    paste(toupper(substring(s, 1,1)), tolower(substring(s, 2)),
-          sep="", collapse=" ")
+    f <- toupper( substr(str, 1, 1) )
+    r <- substr(str, 2, nchar(str))
+    return( paste0(f, r) )
 }
 
 #load
