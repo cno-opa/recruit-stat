@@ -26,6 +26,12 @@ div_by_left <- function(table) {
   return(p)
 }
 
+properize <- function(str) {
+    s <- strsplit(str, " ")[[1]]
+    paste(toupper(substring(s, 1,1)), tolower(substring(s, 2)),
+          sep="", collapse=" ")
+}
+
 #load
 load("./data/master.Rdata")
 
@@ -58,14 +64,12 @@ step_yields <- list(all = d,
 #step yields. this calculates three points in time to compare: the baseline and the previous two complete months. month is considered "complete" if more than 25 days have passed
 make_step_table <- function() {
 
-  #fn to summarize step yield size and proportion by time period
-  success_table <- function(l, lower_limit = "2013-12-01", upper_limit = max(ymd(d$date_applied))) {
+  success_table <- function(l, lower_limit = "2013-12-01", upper_limit = max(ymd(d$date_applied))) {  #fn to summarize step yield size and proportion by time period
     s <- subset( l, ymd(l$date_applied) >= ymd(lower_limit) & ymd(l$date_applied) <= ymd(upper_limit) )
     nrow(s)
   }
 
-  #set months to compare to baseline
-  mx <- day( max(ymd(d$date_applied)) )
+  mx <- day( max(ymd(d$date_applied)) )  #set months to compare to baseline
 
   if(mx > 25) {
     current <- max(ymd(d$date_applied))
@@ -75,27 +79,25 @@ make_step_table <- function() {
 
   prev <- seq(current, length = 2, by = "-1 month")[2]
 
-  #set lower and upper limits for prev and current
-  current_l <- paste( year(current), month(current), "01", sep = "-" )
+  current_l <- paste( year(current), month(current), "01", sep = "-" )  #set lower and upper limits for prev and current
   current_u <- paste( year(current), month(current), days_in_month(month(current)), sep = "-" )
 
   prev_l <- paste( year(prev), month(prev), "01", sep = "-" )
   prev_u <- paste( year(prev), month(prev), days_in_month(month(prev)), sep = "-" )
 
-  #get tables of successful applicants for each step for each time period
-  step_baseline <- as.data.frame(sapply(step_yields, success_table, lower_limit = "2014-01-01", upper_limit = "2014-05-31"))
+  step_baseline <- as.data.frame(sapply(step_yields, success_table, lower_limit = "2014-01-01", upper_limit = "2014-05-31"))  #get tables of successful applicants for each step for each time period
     colnames(step_baseline) <- "Baseline"
   step_prev <- as.data.frame(sapply(step_yields, success_table, lower_limit = prev_l, upper_limit = prev_u))
     colnames(step_prev) <- paste( month(prev, label = TRUE), year(prev) )
   step_current <- as.data.frame(sapply(step_yields, success_table, lower_limit = current_l, upper_limit = current_u))
     colnames(step_current) <- paste( month(current, label = TRUE), year(current) )
 
-  #combine
-  step_success_table <- cbind(step_baseline, step_prev, step_current)
+  step_success_table <- cbind(step_baseline, step_prev, step_current)  #combine
 
   return(step_success_table)
 }
 
+#calculate proportions for success of each step
 make_step_prop_table <- function(x) {
 
   #makes naive step table
