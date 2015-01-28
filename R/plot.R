@@ -75,7 +75,14 @@ ggplot(data = apps, aes(x = month, y = applications, group = 1, label = applicat
   cat( style( "Saving application line chart...", fg = 208) )
 
 #geography of applicants
-
+periods <- colnames(step_success_table)[colnames(step_success_table) != "Baseline"]
+for(p in periods) {
+  add <- filter(d, month_applied == p) %>%
+          group_by(geo) %>%
+          summarise(period = p, count = n())
+  add$prop <- add$count/sum(add$count)
+  t <- rbind_list(t, add)
+}
 
 #
 #end init_plot
