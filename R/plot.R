@@ -91,7 +91,9 @@ ggplot(data = tf,
   aes(x = geo, y = prop, fill = period)) +
   geom_bar(stat = "identity", position = "dodge") +
   labs( title = "Applicant geography", x = "Geography", y = "Proportion of applicantions" ) +
-  scale_fill_manual( name = "Cohorts", values = c("#FF726B","#82ACDB", "#225A98" ) )
+  scale_fill_manual( name = "Cohorts", values = c("#FF726B","#82ACDB", "#225A98" ) ) +
+  ggsave("./output/geos.png", width = 10, height = 5.5)
+  cat( style( "Saving applicant geo histogram...", fg = 208) )
 
 #
 #end init_plot
