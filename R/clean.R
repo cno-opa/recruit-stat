@@ -63,9 +63,9 @@ d$month_applied <- paste0( month(d$date_applied, label = TRUE), " ", year(d$date
 d$days_to_mc <- as.numeric( (ymd(d$written_test) - ymd(d$date_applied)), units = "days" )
 d$days_to_mc[d$days_to_mc < 0] <- NA
 
-#initialize and execute geocall for most recent two months worth of applicants in lieu of full d$geo <- geoloop(d$zip)
+#initialize and execute geocall for most recent 300 days (just for good measure) worth of applicants in lieu of full d$geo <- geoloop(d$zip)
 d$geo <- NA
-cutoff <- max(ymd(d$date_applied)) - days(62)
+cutoff <- max(ymd(d$date_applied)) - days(300)
 d$geo[ymd(d$date_applied) > cutoff] <- geoloop( d$zip[ymd(d$date_applied) > cutoff] )
 d$geo <- unlist(d$geo)
 
