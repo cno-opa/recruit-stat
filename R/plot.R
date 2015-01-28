@@ -43,28 +43,26 @@ apps <- as.data.frame( table(d$month_applied) )
   apps$month <- factor(apps$month, levels = m_order)
   apps <- arrange(apps, month)
 
-  #project apps for incomplete month
-  project_apps <- function() {
-    last <- as.character(apps$month[nrow(apps)])
-    last_ndays <- ymd( paste(
-                      strsplit(last, " ")[[1]][2],
-                      month_str2num(strsplit(last, " ")[[1]][1]),
-                      days_in_month(month_str2num(strsplit(last, " ")[[1]][1])),
-                      sep = "-") )
-    last_measured <- max(ymd(d$date_applied))
+project_apps <- function() { #project apps for incomplete month
+  last <- as.character(apps$month[nrow(apps)])
+  last_ndays <- ymd( paste(
+                    strsplit(last, " ")[[1]][2],
+                    month_str2num(strsplit(last, " ")[[1]][1]),
+                    days_in_month(month_str2num(strsplit(last, " ")[[1]][1])),
+                    sep = "-") )
+  last_measured <- max(ymd(d$date_applied))
 
-    if( (last_ndays - last_measured) > 5 ) {
-      cat("Projecting applications for latest month...")
-      ratio <- as.numeric(format(last_measured, "%d"))/as.numeric(format(last_ndays, "%d"))
-      projection <- round(apps$applications[nrow(apps)]/ratio)
-      apps$applications[nrow(apps)] <- projection
-      levels(apps$month)[levels(apps$month) == last] <- paste(last, "(projected)", sep = " ")
-    }
-    return(apps)
+  if( (last_ndays - last_measured) > 5 ) {
+    cat("Projecting applications for latest month...")
+    ratio <- as.numeric(format(last_measured, "%d"))/as.numeric(format(last_ndays, "%d"))
+    projection <- round(apps$applications[nrow(apps)]/ratio)
+    apps$applications[nrow(apps)] <- projection
+    levels(apps$month)[levels(apps$month) == last] <- paste(last, "(projected)", sep = " ")
   }
+  return(apps)
+}
 
-  #run projection
-  apps <- project_apps()
+apps <- project_apps() #run projection
 
 ggplot(data = apps, aes(x = month, y = applications, group = 1, label = applications)) +
   geom_line( colour = "#225A98", size = 1) +
@@ -83,6 +81,17 @@ for(p in periods) {
   add$prop <- add$count/sum(add$count)
   t <- rbind_list(t, add)
 }
+
+t$period <- properize(t$period)
+t$period <- factor(t$period, levels = unique(t$period) )
+tf <- filter(t, geo == "GNO" | geo == "New Orleans" | geo == "LA" | geo == "TX" | geo == "MS" | geo == "FL")
+tf$geo <- factor(tf$geo, levels = c("New Orleans", "GNO", "LA", "MS", "TX", "FL"))
+
+ggplot(data = tf,
+  aes(x = geo, y = prop, fill = period)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs( title = "Applicant geography", x = "Geography", y = "Proportion of applicantions" ) +
+  scale_fill_manual( name = "Cohorts", values = c("#FF726B","#82ACDB", "#225A98" ) )
 
 #
 #end init_plot
