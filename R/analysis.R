@@ -56,30 +56,34 @@ countSuccess <- function(data, period) {
   qual        <-  filter(data, date_applied >= l, date_applied <= u, disposition != "not qualified")
   docs        <-  filter(qual, date_applied >= l, date_applied <= u, disposition != "documents needed")
   mc          <-  filter(docs, date_applied >= l, date_applied <= u, !is.na(written_test))
+  mc_actual   <-  filter(mc, written_test <= max(data$date_applied))
   mc_attend   <-  filter(mc, date_applied >= l, date_applied <= u, m_c__result == "P" | m_c__result == "F")
   mc_pass     <-  filter(mc_attend, date_applied >= l, date_applied <= u, m_c__result == "P")
   we          <-  filter(mc_pass, date_applied >= l, date_applied <= u, !is.na(writing_exercise))
+  we_actual   <-  filter(we, writing_exercise <= max(data$date_applied))
   we_attend   <-  filter(we, date_applied >= l, date_applied <= u, w_e__result == "P" | w_e__result == "F")
   we_pass     <-  filter(we_attend, date_applied >= l, date_applied <= u, w_e__result == "P")
   agil        <-  filter(we_pass, date_applied >= l, date_applied <= u, !is.na(agility_test))
+  agil_actual <-  filter(agil, agility_test <= max(data$date_applied))
   agil_attend <-  filter(agil, date_applied >= l, date_applied <= u, agility_result == "P" | agility_result == "F")
   agil_pass   <-  filter(agil_attend, date_applied >= l, date_applied <= u, agility_result == "P")
 
   rbind(
-    summarise(all, step = "applied", period = as.character(period_name), count = n()),
-    summarise(qual, step = "qualified", period = as.character(period_name), count = n()),
-    summarise(docs, step = "docs submitted", period = as.character(period_name), count = n()),
-    summarise(mc, step = "scheduled mc", period = as.character(period_name), count = n()),
-    summarise(mc_attend, step = "attended mc", period = as.character(period_name), count = n()),
-    summarise(mc_pass, step = "passed mc", period = as.character(period_name), count = n()),
-    summarise(we, step = "scheduled we", period = as.character(period_name), count = n()),
-    summarise(we_attend, step = "attended we", period = as.character(period_name), count = n()),
-    summarise(we_pass, step = "passed we", period = as.character(period_name), count = n()),
-    summarise(agil, step = "scheduled agility", period = as.character(period_name), count = n()),
-    summarise(agil_attend, step = "attended agility", period = as.character(period_name), count = n()),
-    summarise(agil_pass, step = "passed agility", period = as.character(period_name), count = n())
+    summarise(all, step = "applied", period = as.character(period_name), count = n(), prop = NA),
+    summarise(qual, step = "qualified", period = as.character(period_name), count = n(), prop = count/nrow(all)),
+    summarise(docs, step = "docs submitted", period = as.character(period_name), count = n(), prop = count/nrow(qual)),
+    summarise(mc, step = "scheduled mc", period = as.character(period_name), count = n(), prop = count/nrow(docs)),
+    summarise(mc_attend, step = "attended mc", period = as.character(period_name), count = n(), prop = count/nrow(mc_actual)),
+    summarise(mc_pass, step = "passed mc", period = as.character(period_name), count = n(), prop = count/nrow(mc_attend)),
+    summarise(we, step = "scheduled we", period = as.character(period_name), count = n(), prop = count/nrow(mc_pass)),
+    summarise(we_attend, step = "attended we", period = as.character(period_name), count = n(), prop = count/nrow(we_actual)),
+    summarise(we_pass, step = "passed we", period = as.character(period_name), count = n(), prop = count/nrow(we_attend)),
+    summarise(agil, step = "scheduled agility", period = as.character(period_name), count = n(), prop = count/nrow(we_pass)),
+    summarise(agil_attend, step = "attended agility", period = as.character(period_name), count = n(), prop = count/nrow(agil_actual)),
+    summarise(agil_pass, step = "passed agility", period = as.character(period_name), count = n(), prop = count/nrow(agil_pass))
   )
 }
+
 
 #load
 load("./data/master.Rdata")
@@ -99,7 +103,6 @@ steps <- rbind(
                 countSuccess(d, prev),
                 countSuccess(d, current)
               )
-
 
 #
 #end init_analysis
