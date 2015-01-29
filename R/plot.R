@@ -47,8 +47,8 @@ project_apps <- function() { #project apps for incomplete month
   last <- as.character(apps$month[nrow(apps)])
   last_ndays <- ymd( paste(
                     strsplit(last, " ")[[1]][2],
-                    month_str2num(strsplit(last, " ")[[1]][1]),
-                    days_in_month(month_str2num(strsplit(last, " ")[[1]][1])),
+                    monthStrToNum(strsplit(last, " ")[[1]][1]),
+                    days_in_month(monthStrToNum(strsplit(last, " ")[[1]][1])),
                     sep = "-") )
   last_measured <- max(ymd(d$date_applied))
 
