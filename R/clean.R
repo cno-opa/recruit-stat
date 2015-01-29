@@ -74,7 +74,7 @@ d$geo[ymd(d$date_applied) > cutoff] <- geoloop( d$zip[ymd(d$date_applied) > cuto
 d$geo <- unlist(d$geo)
 
 save(d, file = "./data/master.Rdata")
-write.csv( d, paste("./output/data-cleaned", Sys.Date(), ".csv"), row.names = FALSE )
+write.csv( d, paste("./output/data-cleaned", Sys.Date(), ".csv", sep = "-"), row.names = FALSE )
 
 #
 #end init_clean
