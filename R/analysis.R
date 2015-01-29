@@ -1,7 +1,7 @@
 #analysis.R
 #performs various analyses on cleaned data
 
-#TODO: Test and perhaps PROFIT
+#TODO: PROFIT
 
 require(lubridate)
 require(dplyr)
@@ -154,6 +154,7 @@ we_outcomes <- we_outcomes()
 mc_median <- mc_median()
 
 #save
+cat( style("Saving data tables..", fg = 208) )
 write.csv(steps, paste("./output/steps", Sys.Date(), ".csv", sep = "-"), row.names = FALSE)
 write.csv(mc_outcomes, paste("./output/mc-outcomes", Sys.Date(), ".csv", sep = "-"), row.names = FALSE)
 write.csv(we_outcomes, paste("./output/we-outcomes", Sys.Date(), ".csv", sep = "-"), row.names = FALSE)

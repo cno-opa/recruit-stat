@@ -53,7 +53,7 @@ project_apps <- function() { #project apps for incomplete month
   last_measured <- max(ymd(d$date_applied))
 
   if( (last_ndays - last_measured) > 5 ) {
-    cat("Projecting applications for latest month...")
+    cat( style("Projecting applications for latest month...", fg = 208))
     ratio <- as.numeric(format(last_measured, "%d"))/as.numeric(format(last_ndays, "%d"))
     projection <- round(apps$applications[nrow(apps)]/ratio)
     apps$applications[nrow(apps)] <- projection
