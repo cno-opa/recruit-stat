@@ -1,7 +1,7 @@
 #analysis.R
 #performs various analyses on cleaned data
 
-#TODO: make prop table generator fn less ugly. find way to not harcode list of data tables in env
+#TODO: Test and perhaps PROFIT
 
 require(lubridate)
 require(dplyr)
@@ -84,6 +84,52 @@ countSuccess <- function(data, period) {
   )
 }
 
+#misc tables
+mc_outcomes <- function() {
+  s <- filter(d, !is.na(written_test))%>%
+        group_by(written_test)%>%
+        summarise(scheduled = n())
+  a <- filter(d, m_c__result == "P" | m_c__result == "F")%>%
+        group_by(written_test)%>%
+        summarise(attended = n())
+  p <- filter(d, m_c__result == "P")%>%
+        group_by(written_test)%>%
+        summarise(passed = n())
+
+  left_join(s, a, by = "written_test")%>%
+    left_join(p, by = "written_test")
+}
+
+we_outcomes <- function() {
+  s <- filter(d, !is.na(writing_exercise))%>%
+        group_by(writing_exercise)%>%
+        summarise(scheduled = n())
+  a <- filter(d, w_e__result == "P" | w_e__result == "F")%>%
+        group_by(writing_exercise)%>%
+        summarise(attended = n())
+  p <- filter(d, w_e__result == "P")%>%
+        group_by(writing_exercise)%>%
+        summarise(passed = n())
+
+  left_join(s, a, by = "writing_exercise")%>%
+    left_join(p, by = "writing_exercise")
+}
+
+#median days to multiple choice exam
+mc_median <- function() {
+  s <- filter(d, !is.na(written_test))%>%
+        group_by(written_test)%>%
+        summarise(scheduled = median(days_to_mc))
+  a <- filter(d, m_c__result == "P" | m_c__result == "F")%>%
+        group_by(written_test)%>%
+        summarise(attended = median(days_to_mc))
+  p <- filter(d, m_c__result == "P")%>%
+        group_by(written_test)%>%
+        summarise(passed = median(days_to_mc))
+
+  left_join(s, a, by = "written_test")%>%
+    left_join(p, by = "written_test")
+}
 
 #load
 load("./data/master.Rdata")
@@ -103,6 +149,15 @@ steps <- rbind(
                 countSuccess(d, prev),
                 countSuccess(d, current)
               )
+mc_outcomes <- mc_outcomes()
+we_outcomes <- we_outcomes()
+mc_median <- mc_median()
+
+#save
+write.csv(steps, paste("./output/steps", Sys.Date(), ".csv", sep = "-"), row.names = FALSE)
+write.csv(mc_outcomes, paste("./output/mc-outcomes", Sys.Date(), ".csv", sep = "-"), row.names = FALSE)
+write.csv(we_outcomes, paste("./output/we-outcomes", Sys.Date(), ".csv", sep = "-"), row.names = FALSE)
+write.csv(mc_median, paste("./output/mc-median", Sys.Date(), ".csv", sep = "-"), row.names = FALSE)
 
 #
 #end init_analysis
