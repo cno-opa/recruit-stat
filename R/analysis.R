@@ -113,8 +113,20 @@ make_step_prop_table <- function(x) {
   #make prop table that calculates attendance proportion only by applicants who have test scheduled before end of reporting period
   make_aware <- function(a, b) {
     mx <- max(ymd(d$date_applied))
-    prev <- paste("2014", month_str2num( colnames(b)[2] ) , "01", sep = "-")
-    current <- paste("2014", month_str2num( colnames(b)[3] ) , "01", sep = "-")
+
+    prev <- mdy( paste(
+                  strsplit(colnames(x)[2], " ")[[1]][1],
+                  "1",
+                  strsplit(colnames(x)[2], " ")[[1]][2]
+                  )
+                )
+
+    current <- mdy( paste(
+                  strsplit(colnames(x)[3], " ")[[1]][1],
+                  "1",
+                  strsplit(colnames(x)[3], " ")[[1]][2]
+                  )
+                )
 
     a[4,2] <- b[5,2]/nrow( as.data.frame(step_yields[4])[ymd(unlist(as.data.frame(step_yields[4])[2])) >= ymd(prev) & ymd(unlist(as.data.frame(step_yields[4])[2])) < ymd(current) & ymd(unlist(as.data.frame(step_yields[4])[4])) < ymd(mx), ] )
     a[4,3] <- b[5,3]/nrow( as.data.frame(step_yields[4])[ymd(unlist(as.data.frame(step_yields[4])[2])) >= ymd(current) & ymd(unlist(as.data.frame(step_yields[4])[4])) < ymd(mx), ] )
