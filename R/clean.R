@@ -50,6 +50,9 @@ d$identifier <- gsub( ",", "", d$identifier )
 d$identifier <- as.numeric(d$identifier)
 d$disposition <- tolower(d$disposition)
 d$date_applied <- ymd(d$date_applied)
+d$written_test <- ymd(d$written_test)
+d$writing_exercise <- ymd(d$writing_exercise)
+d$agility_test <- ymd(d$agility_test)
 
 #make some useful bins
 age_brks <- c( "18", "20", "25", "30", "35", "40", "45", "50", "60", "70" )
