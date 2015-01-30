@@ -25,6 +25,7 @@ n <- readLines("stdin", 1, warn=FALSE)
 n <- as.numeric(n)
 
 #load and clean
+cat( style(paste("Using", f[n], sep = " "), fg = 208) )
 d <- read.xls( paste0("./data/", f[n]), na.strings = c("", "#N/A", "NA", "#DIV/0!"), strip.white = TRUE )
 d$X <- NULL
 d$X.1 <- NULL
