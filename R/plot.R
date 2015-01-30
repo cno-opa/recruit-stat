@@ -18,22 +18,67 @@ load("./data/analysis-obj.Rdata")
 load("./data/geobase.Rdata")
 
 #data transformation for plotting
-step_titles <- factor( c("Qualified", "Submitted documents", "Scheduled MC", "Attended MC", "Passed MC", "Scheduled WE", "Attended WE", "Passed WE", "Scheduled Agility", "Attended Agility", "Passed Agility"), levels = c("Qualified", "Submitted documents", "Scheduled MC", "Attended MC", "Passed MC", "Scheduled WE", "Attended WE", "Passed WE", "Scheduled Agility", "Attended Agility", "Passed Agility") )
-step_success_prop_table$steps <- step_titles
+step_names <- factor( c("Applied",
+                        "Qualified",
+                        "Submitted documents",
+                        "Scheduled MC",
+                        "Attended MC",
+                        "Passed MC",
+                        "Scheduled WE",
+                        "Attended WE",
+                        "Passed WE",
+                        "Scheduled Agility",
+                        "Attended Agility",
+                        "Passed Agility"),
+                        levels = c("Applied",
+                        "Qualified",
+                        "Submitted documents",
+                        "Scheduled MC",
+                        "Attended MC",
+                        "Passed MC",
+                        "Scheduled WE",
+                        "Attended WE",
+                        "Passed WE",
+                        "Scheduled Agility",
+                        "Attended Agility",
+                        "Passed Agility")
+                      )
+steps$step <- as.factor(steps$step)
+steps$step <- step_names
+steps$period <- properize(steps$period)
 
-#relative step success rates
-steps <- melt(step_success_prop_table)
-ggplot(data = steps, aes(x = steps, y = value, fill = variable)) +
-  geom_bar(stat = "identity", position = position_dodge(width = 0.7), width = 0.7) +
-  theme(axis.text.x = element_text(angle = 45, hjust = .97)) +
-  scale_fill_manual( name = "Cohorts", values = c("#FF726B","#82ACDB", "#225A98" ) ) +
-  scale_y_continuous(labels = percent) +
-  labs( title = "Individual step yields", x = "Steps", y = "Success rate" ) +
-  ggsave("./output/rel-steps.png", width = 10, height = 5.5)
-  cat( style( "Saving individual step yields histogram...", fg = 208) )
+#charts
+step_hist <- function() {
+  ggplot(data = steps[steps$step != "Applied",], aes(x = step, y = prop, fill = period)) +
+    geom_bar(stat = "identity", position = position_dodge(width = 0.7), width = 0.7) +
+    theme(axis.text.x = element_text(angle = 45, hjust = .97)) +
+    scale_fill_manual( name = "Cohorts", values = c("#FF726B","#82ACDB", "#225A98" ) ) +
+    labs( title = "Individual step yields", x = "Steps", y = "Success rate" ) +
+    ggsave("./output/rel-steps.png", width = 10, height = 5.5)
+    cat( style( "Saving individual step yields histogram...", fg = 208) )
+}
 
-#applications and applicant geographies
-apps <- as.data.frame( table(d$month_applied) )
+apps <- function() {
+  project_apps <- function() { #project apps for incomplete month
+    last <- as.character(apps$month[nrow(apps)])
+    last_ndays <- ymd( paste(
+                      strsplit(last, " ")[[1]][2],
+                      monthStrToNum(strsplit(last, " ")[[1]][1]),
+                      days_in_month(monthStrToNum(strsplit(last, " ")[[1]][1])),
+                      sep = "-") )
+    last_measured <- max(ymd(d$date_applied))
+
+    if( (last_ndays - last_measured) > 5 ) {
+      cat( style("Projecting applications for latest month...", fg = 208))
+      ratio <- as.numeric(format(last_measured, "%d"))/as.numeric(format(last_ndays, "%d"))
+      projection <- round(apps$applications[nrow(apps)]/ratio)
+      apps$applications[nrow(apps)] <- projection
+      levels(apps$month)[levels(apps$month) == last] <- paste(last, "(projected)", sep = " ")
+    }
+    return(apps)
+  }
+
+  apps <- as.data.frame( table(d$month_applied) )
   dimnames(apps)[[2]] <- c("month", "applications")
   d <- d[order(ymd(d$date_applied)),]
   m_order <- unique(d$month_applied)
@@ -42,58 +87,63 @@ apps <- as.data.frame( table(d$month_applied) )
   apps <- rbind(h, apps)
   apps$month <- factor(apps$month, levels = m_order)
   apps <- arrange(apps, month)
+  apps <- project_apps() #run projection
 
-project_apps <- function() { #project apps for incomplete month
-  last <- as.character(apps$month[nrow(apps)])
-  last_ndays <- ymd( paste(
-                    strsplit(last, " ")[[1]][2],
-                    monthStrToNum(strsplit(last, " ")[[1]][1]),
-                    days_in_month(monthStrToNum(strsplit(last, " ")[[1]][1])),
-                    sep = "-") )
-  last_measured <- max(ymd(d$date_applied))
+  ggplot(data = apps, aes(x = month, y = applications, group = 1, label = applications)) +
+    geom_line( colour = "#225A98", size = 1) +
+    geom_text( size = 3, vjust = -.9, hjust = 1 ) +
+    theme(axis.text.x = element_text(angle = 45, hjust = .97)) +
+    labs( title = "Applications by month", x = "Month", y = "Applications" ) +
+    ggsave("./output/apps.png", width = 10, height = 5.5)
+    cat( style( "Saving application line chart...", fg = 208) )
+}
 
-  if( (last_ndays - last_measured) > 5 ) {
-    cat( style("Projecting applications for latest month...", fg = 208))
-    ratio <- as.numeric(format(last_measured, "%d"))/as.numeric(format(last_ndays, "%d"))
-    projection <- round(apps$applications[nrow(apps)]/ratio)
-    apps$applications[nrow(apps)] <- projection
-    levels(apps$month)[levels(apps$month) == last] <- paste(last, "(projected)", sep = " ")
+geos <- function() {
+  #histogram
+  periods <- unique(steps$period)[unique(steps$period) != "Baseline"]
+  for(p in periods) {
+    add <- filter(d, month_applied == p) %>%
+            group_by(geo) %>%
+            summarise(period = p, count = n())
+    add$prop <- add$count/sum(add$count)
+    t <- rbind_list(t, add)
   }
-  return(apps)
+
+  t$period <- properize(t$period)
+  t$period <- factor(t$period, levels = unique(t$period) )
+  tf <- filter(t, geo == "GNO" | geo == "New Orleans" | geo == "LA" | geo == "TX" | geo == "MS" | geo == "FL")
+  tf$geo <- factor(tf$geo, levels = c("New Orleans", "GNO", "LA", "MS", "TX", "FL"))
+
+  ggplot(data = tf,
+    aes(x = geo, y = prop, fill = period)) +
+    geom_bar(stat = "identity", position = "dodge") +
+    labs( title = "Applicant geography", x = "Geography", y = "Proportion of applicantions" ) +
+    scale_fill_manual( name = "Cohorts", values = c("#FF726B","#82ACDB", "#225A98" ) ) +
+    ggsave("./output/geos.png", width = 10, height = 5.5)
+    cat( style( "Saving applicant geo histogram...", fg = 208) )
+
+  #line
+  l <- ymd(paste(
+       strsplit(periods[2], " ")[[1]][2],
+       monthStrToNum(strsplit(periods[2], " ")[[1]][1]),
+       "01",
+       sep = "-"
+       ))
+
+  w <- filter(d, date_applied > l)%>%
+       group_by(geo, period = paste( year(date_applied), week(date_applied), sep="-" ) ) %>%
+       summarise(n = n()) %>%
+       arrange(period)
+  w$period <- as.factor(w$period)
+  wf <- filter(w, geo == "GNO" | geo == "New Orleans" | geo == "LA" | geo == "TX" | geo == "MS" | geo == "FL")
+  ggplot(wf, aes(x = period, y = n, group = geo, colour = geo)) +
+    geom_line() +
+    theme(axis.text.x = element_text(angle = 45, hjust = .97)) +
+    labs( title = "Applicant geography", x = "Year and week", y = "Count of applications" ) +
+    scale_colour_discrete(name = "Geographies")
+    ggsave("./output/geos-line.png", width = 10, height = 5.5)
+    cat( style( "Saving applicant geo line chart...", fg = 208) )
 }
-
-apps <- project_apps() #run projection
-
-ggplot(data = apps, aes(x = month, y = applications, group = 1, label = applications)) +
-  geom_line( colour = "#225A98", size = 1) +
-  geom_text( size = 3, vjust = -.9, hjust = 1 ) +
-  theme(axis.text.x = element_text(angle = 45, hjust = .97)) +
-  labs( title = "Applications by month", x = "Month", y = "Applications" ) +
-  ggsave("./output/apps.png", width = 10, height = 5.5)
-  cat( style( "Saving application line chart...", fg = 208) )
-
-#geography of applicants
-periods <- colnames(step_success_table)[colnames(step_success_table) != "Baseline"]
-for(p in periods) {
-  add <- filter(d, month_applied == p) %>%
-          group_by(geo) %>%
-          summarise(period = p, count = n())
-  add$prop <- add$count/sum(add$count)
-  t <- rbind_list(t, add)
-}
-
-t$period <- properize(t$period)
-t$period <- factor(t$period, levels = unique(t$period) )
-tf <- filter(t, geo == "GNO" | geo == "New Orleans" | geo == "LA" | geo == "TX" | geo == "MS" | geo == "FL")
-tf$geo <- factor(tf$geo, levels = c("New Orleans", "GNO", "LA", "MS", "TX", "FL"))
-
-ggplot(data = tf,
-  aes(x = geo, y = prop, fill = period)) +
-  geom_bar(stat = "identity", position = "dodge") +
-  labs( title = "Applicant geography", x = "Geography", y = "Proportion of applicantions" ) +
-  scale_fill_manual( name = "Cohorts", values = c("#FF726B","#82ACDB", "#225A98" ) ) +
-  ggsave("./output/geos.png", width = 10, height = 5.5)
-  cat( style( "Saving applicant geo histogram...", fg = 208) )
 
 #
 #end init_plot
