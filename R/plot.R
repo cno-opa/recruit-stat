@@ -145,6 +145,11 @@ geos <- function() {
     cat( style( "Saving applicant geo line chart...", fg = 208) )
 }
 
+#execution
+step_hist()
+apps()
+geos()
+
 #
 #end init_plot
 }
