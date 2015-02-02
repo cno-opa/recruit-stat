@@ -25,7 +25,7 @@ n <- readLines("stdin", 1, warn=FALSE)
 n <- as.numeric(n)
 
 #load and clean
-cat( style(paste("Using", f[n], sep = " "), fg = 208) )
+cat( style(paste("Using \n \n", f[n], sep = " "), fg = 208) )
 d <- read.xls( paste0("./data/", f[n]), na.strings = c("", "#N/A", "NA", "#DIV/0!"), strip.white = TRUE )
 d$X <- NULL
 d$X.1 <- NULL
@@ -70,7 +70,7 @@ d$days_to_mc[d$days_to_mc < 0] <- NA
 
 #initialize and execute geocall for most recent 300 days (just for good measure) worth of applicants in lieu of full d$geo <- geoloop(d$zip)
 d$geo <- NA
-cutoff <- max(ymd(d$date_applied)) - days(300)
+cutoff <- max(ymd(d$date_applied)) - days(120)
 d$geo[ymd(d$date_applied) > cutoff] <- geoloop( d$zip[ymd(d$date_applied) > cutoff] )
 d$geo <- unlist(d$geo)
 
