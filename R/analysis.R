@@ -1,7 +1,7 @@
 #analysis.R
 #performs various analyses on cleaned data
 
-#TODO: PROFIT
+#TODO: Remove hacks in countSuccess() and ln 159
 
 require(lubridate)
 require(dplyr)
@@ -80,12 +80,12 @@ countSuccess <- function(data, period) {
     summarise(we_pass, step = "passed we", period = as.character(period_name), count = n(), prop = count/nrow(we_attend)),
     summarise(agil, step = "scheduled agility", period = as.character(period_name), count = n(), prop = count/nrow(we_pass)),
     if( nrow(agil_attend) == 0 ) {
-      c("attended agility", as.character(period_name), 0, NA)
+      c("attended agility", as.character(period_name), 0, 0)
     } else {
       summarise(agil_attend, step = "attended agility", period = as.character(period_name), count = n(), prop = count/nrow(agil_actual))
     },
     if( nrow(agil_pass) == 0 ){
-      c("passed agility", as.character(period_name), 0, NA)
+      c("passed agility", as.character(period_name), 0, 0)
     } else {
       summarise(agil_pass, step = "passed agility", period = as.character(period_name), count = n(), prop = count/nrow(agil_pass))
     }
@@ -156,6 +156,7 @@ steps <- rbind(
                 countSuccess(d, prev),
                 countSuccess(d, current)
               )
+steps$prop <- as.numeric(steps$prop) #hack
 mc_outcomes <- mc_outcomes()
 we_outcomes <- we_outcomes()
 mc_median <- mc_median()
