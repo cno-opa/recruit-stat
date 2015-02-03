@@ -9,7 +9,7 @@ require(stringr)
 require(xtermStyle)
 
 geocall <- function(zip) {
-  api_key <- "API_KEY"
+  api_key <- readLines(file("creds.txt"))
   zip <- as.character(zip)
   url <- paste0("https://maps.googleapis.com/maps/api/distancematrix/json?origins=", zip, "&destinations=New+Orleans,+LA&units=imperial&key=", api_key)
 
