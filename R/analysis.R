@@ -79,8 +79,16 @@ countSuccess <- function(data, period) {
     summarise(we_attend, step = "attended we", period = as.character(period_name), count = n(), prop = count/nrow(we_actual)),
     summarise(we_pass, step = "passed we", period = as.character(period_name), count = n(), prop = count/nrow(we_attend)),
     summarise(agil, step = "scheduled agility", period = as.character(period_name), count = n(), prop = count/nrow(we_pass)),
-    summarise(agil_attend, step = "attended agility", period = as.character(period_name), count = n(), prop = count/nrow(agil_actual)),
-    summarise(agil_pass, step = "passed agility", period = as.character(period_name), count = n(), prop = count/nrow(agil_pass))
+    if( nrow(agil_attend) == 0 ) {
+      c("attended agility", as.character(period_name), 0, NA)
+    } else {
+      summarise(agil_attend, step = "attended agility", period = as.character(period_name), count = n(), prop = count/nrow(agil_actual))
+    },
+    if( nrow(agil_pass) == 0 ){
+      c("passed agility", as.character(period_name), 0, NA)
+    } else {
+      summarise(agil_pass, step = "passed agility", period = as.character(period_name), count = n(), prop = count/nrow(agil_pass))
+    }
   )
 }
 
@@ -115,7 +123,6 @@ we_outcomes <- function() {
     left_join(p, by = "writing_exercise")
 }
 
-#median days to multiple choice exam
 mc_median <- function() {
   s <- filter(d, !is.na(written_test))%>%
         group_by(written_test)%>%
