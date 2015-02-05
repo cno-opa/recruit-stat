@@ -56,12 +56,11 @@ d$writing_exercise <- ymd(d$writing_exercise)
 d$agility_test <- ymd(d$agility_test)
 
 #make some useful bins
-age_brks <- c( "18", "20", "25", "30", "35", "40", "45", "50", "60", "70" )
-#d$age <- as.numeric((ymd(today()) - ymd(d$age))/365) <= CS changed from DOB to calculated age
-d$age_group <- cut( d$age, age_brks )
-d$age_group <- gsub( "\\(", "", d$age_group )
-d$age_group <- gsub( "]", "", d$age_group )
-d$age_group <- gsub( ",", "-", d$age_group )
+# age_brks <- c( "18", "20", "25", "30", "35", "40", "45", "50", "60", "70" )
+# d$age_group <- cut( d$age, age_brks )
+# d$age_group <- gsub( "\\(", "", d$age_group )
+# d$age_group <- gsub( "]", "", d$age_group )
+# d$age_group <- gsub( ",", "-", d$age_group )
 
 d$month_applied <- paste0( month(d$date_applied, label = TRUE), " ", year(d$date_applied) )
 
