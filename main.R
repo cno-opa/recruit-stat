@@ -1,5 +1,5 @@
 #!usr/bin/Rscript
-# runs the whole kit and kaboodle
+#runs the whole kit and kaboodle
 
 require(xtermStyle)
 
