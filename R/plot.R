@@ -89,13 +89,26 @@ apps <- function() {
   apps <- arrange(apps, month)
   apps <- project_apps() #run projection
 
+  apps_d <- filter(d, date_applied > (max(date_applied) - days(62)))%>%
+            group_by(date_applied)%>%
+            summarise(n = n())
+
+  #monthly apps
   ggplot(data = apps, aes(x = month, y = applications, group = 1, label = applications)) +
-    geom_line( colour = "#225A98", size = 1) +
+    geom_line( colour = "#225A98", size = 1 ) +
     geom_text( size = 3, vjust = -.9, hjust = 1 ) +
     theme(axis.text.x = element_text(angle = 45, hjust = .97)) +
     labs( title = "Applications by month", x = "Month", y = "Applications" ) +
     ggsave("./output/apps.png", width = 10, height = 5.5)
     cat( style( "Saving application line chart...\n", fg = 208) )
+
+  #daily apps
+  ggplot(data = apps_d, aes(x = date_applied, y = n, group = 1)) +
+  geom_line( colour = "#225A98", size = 1 ) +
+  geom_hline(aes( yintercept = mean(n), colour = "orange") ) + 
+  labs(title = "Applications by day", x = "Day", y = "Applications") +
+  ggsave("./output/apps-daily.png", width = 10, height = 5.5)
+  cat( style( "Saving daily application line chart...\n", fg = 208) )
 }
 
 geos <- function() {
