@@ -105,7 +105,7 @@ apps <- function() {
   #daily apps
   ggplot(data = apps_d, aes(x = date_applied, y = n, group = 1)) +
     geom_line( colour = "#225A98", size = 1 ) +
-    geom_hline(aes( yintercept = mean(n), colour = "orange") ) +
+    geom_hline( aes(yintercept = mean(n)), colour = "#FF726B", linetype = "dashed" ) +
     labs(title = "Applications by day", x = "Day", y = "Applications") +
     ggsave("./output/apps-daily.png", width = 10, height = 5.5)
     cat( style( "Saving daily application line chart...\n", fg = 208) )
