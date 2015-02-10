@@ -25,7 +25,7 @@ n <- as.numeric(n)
 
 #load and clean
 cat( paste("Using", f[n], "\n \n", sep = " ") )
-d <- read.xls( paste0("./data/", f[n]), na.strings = c("", "#N/A", "NA", "#DIV/0!"), strip.white = TRUE )
+d <- read.xls( paste0("./data/", f[n]), na.strings = c("", "#N/A", "NA", "#DIV/0!"), strip.white = TRUE, perl = "C:/Strawberry/perl/bin/perl.exe" )
 d$X <- NULL
 d$X.1 <- NULL
 d$X.2 <- NULL
