@@ -6,14 +6,13 @@
 require(jsonlite)
 require(RCurl)
 require(stringr)
-require(xtermStyle)
 
 geocall <- function(zip) {
   api_key <- readLines(file("creds.txt"))
   zip <- as.character(zip)
   url <- paste0("https://maps.googleapis.com/maps/api/distancematrix/json?origins=", zip, "&destinations=New+Orleans,+LA&units=imperial&key=", api_key)
 
-  response <- getURL(url)
+  response <- getURL(url, cainfo = "C:\\Program Files\\Git\\bin\\curl-ca-bundle.crt")
   response <- fromJSON(response)
   response$rows$elements <- data.frame(response$rows$elements)
 
@@ -41,7 +40,7 @@ geoloop <- function(zips) {
 
   for(zip in zips) {
     geo <- append(geo, geocall(zip))
-    cat( style( paste("Geocoding", zip, "\n"), fg = 208 ) )
+    cat( paste("Geocoding", zip, "\n") )
   }
 
   return(geo)

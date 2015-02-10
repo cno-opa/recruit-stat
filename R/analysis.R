@@ -5,7 +5,6 @@
 
 require(lubridate)
 require(dplyr)
-require(xtermStyle)
 
 init_analysis <- function() {
 #
@@ -26,7 +25,7 @@ properize <- function(str) {
 
 #count individual step yields
 countSuccess <- function(data, period) {
-  if(period == "baseline") {
+  if(as.character(period) == "baseline") {
     l <- ymd("2014-01-01")
     u <- ymd("2014-06-01")
     period_name <- "baseline"
@@ -162,7 +161,7 @@ we_outcomes <- we_outcomes()
 mc_median <- mc_median()
 
 #save
-cat( style("Saving data tables.. \n", fg = 208) )
+cat( "Saving data tables.. \n" )
 save(list = ls(), file = "./data/analysis-obj.Rdata")
 write.csv(steps, paste("./output/steps", Sys.Date(), ".csv", sep = "-"), row.names = FALSE)
 write.csv(mc_outcomes, paste("./output/mc-outcomes", Sys.Date(), ".csv", sep = "-"), row.names = FALSE)
