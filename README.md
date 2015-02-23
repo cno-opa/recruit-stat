@@ -1,10 +1,9 @@
-# Analysis and plotting for Police Recruit STAT
+# Police Recruit STAT
 
 ## To do
 
- * Plotting
  * Decide if stdin is the best way to incorporate NOPD data
- * Regression models
+ * Regression model
 
 ## Important!
 
