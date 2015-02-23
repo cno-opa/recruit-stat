@@ -143,7 +143,8 @@ load("./data/master.Rdata")
 
 #set cohort months
 mx <- day( max(ymd(d$date_applied)) )
-if(mx > 25) {
+cutoff <- (days_in_month(month(max(d$date_applied)))) - 7
+if(mx > cutoff) {
   current <- max(ymd(d$date_applied))
 } else {
   current <- seq(max(ymd(d$date_applied)), length = 2, by = "-1 month")[2]
