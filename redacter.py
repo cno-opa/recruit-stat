@@ -52,9 +52,9 @@ def redact(redacters, doc):
     redacted = Document()
 
     for p in doc.paragraphs:
-        p_r = p.text
+        p_r = p.text.lower()
         for r in redacters:
-            p_r = re.sub(r, '[REDACTED]', p_r.lower())
+            p_r = re.sub(r, '[REDACTED]', p_r)
         redacted.add_paragraph(p_r)
     return redacted
 
