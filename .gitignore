@@ -6,3 +6,5 @@
 data/*
 output/*
 creds.txt
+venv/*
+*.bat
