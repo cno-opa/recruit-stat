@@ -56,7 +56,7 @@ theme_set(theme_opa())
 step_hist <- function() {
   p <- barOPA(data = steps[steps$step != "Applied",], "step", "prop", "Individual step yields", fill = "period", position = "dodge", percent = TRUE)
   p <- buildChart(p)
-  ggsave("./output/step-yields.png", plot = p, width = 7.42, height = 5.75)
+  ggsave("./output/step-yields.png", plot = p, width = 9.33, height = 5.67)
 }
 
 apps <- function() {
@@ -178,13 +178,14 @@ cs_exams <- function() {
 
   p <- barOPA(d, "written_test", "value", "Multiple choice exam", fill = "variable", position = "dodge", percent = TRUE, legend.labels = c("Attended", "Passed"))
   p <- buildChart(p)
-  ggsave("./output/mc-exam-outcomes.png", plot = p_d, width = 7.42, height = 5.75)
+  ggsave("./output/mc-exam-outcomes.png", plot = p, width = 7.42, height = 5.75)
 }
 
 #execution
 step_hist()
 apps()
 #geos()
+cs_exams()
 
 #
 #end init_plot

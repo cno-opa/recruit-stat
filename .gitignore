@@ -10,3 +10,4 @@ venv/*
 *.bat
 *.docx
 *.pdf
+*.pptx
