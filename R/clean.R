@@ -67,10 +67,10 @@ d$days_to_mc <- as.numeric( (ymd(d$written_test) - ymd(d$date_applied)), units =
 d$days_to_mc[d$days_to_mc < 0] <- NA
 
 #initialize and execute geocall for most recent 300 days (just for good measure) worth of applicants in lieu of full d$geo <- geoloop(d$zip)
-d$geo <- NA
-cutoff <- max(ymd(d$date_applied)) - days(120)
-d$geo[ymd(d$date_applied) > cutoff] <- geoloop( d$zip[ymd(d$date_applied) > cutoff] )
-d$geo <- unlist(d$geo)
+# d$geo <- NA
+# cutoff <- max(ymd(d$date_applied)) - days(120)
+# d$geo[ymd(d$date_applied) > cutoff] <- geoloop( d$zip[ymd(d$date_applied) > cutoff] )
+# d$geo <- unlist(d$geo)
 
 save(d, file = "./data/master.Rdata")
 write.csv( d, paste("./output/data-cleaned", Sys.Date(), ".csv", sep = "-"), row.names = FALSE )
