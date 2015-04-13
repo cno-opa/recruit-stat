@@ -3,9 +3,6 @@
 
 #TODO: Remove hacks in countSuccess() and ln 159
 
-require(lubridate)
-require(dplyr)
-
 init_analysis <- function() {
 #
 #
@@ -25,7 +22,7 @@ properize <- function(str) {
 
 #count individual step yields
 countSuccess <- function(data, period) {
-  if(period == "baseline") {
+  if(as.character(period) == "baseline") {
     l <- ymd("2014-01-01")
     u <- ymd("2014-06-01")
     period_name <- "baseline"
@@ -160,6 +157,8 @@ steps$prop <- as.numeric(steps$prop) #hack
 mc_outcomes <- mc_outcomes()
 we_outcomes <- we_outcomes()
 mc_median <- mc_median()
+months_in_data <- seq(min(d$date_applied), current, by = "month")
+steps_all <- do.call("rbind", lapply(months_in_data, countSuccess, data = d))
 
 #save
 cat("Saving data tables.. \n")

@@ -4,10 +4,6 @@
 
 #TODO: PROFIT
 
-require(lubridate)
-require(gdata)
-require(stringr)
-
 init_clean <- function() {
 #
 #
@@ -45,7 +41,7 @@ d$disposition <- trim(d$disposition)
 d$m_c__result <- trim(d$m_c__result)
 d$w_e__result <- trim(d$w_e__result)
 d$agility_result <- trim(d$agility_result)
-levels(d$sex) <- c( "F", "M", "M", "U" )
+levels(d$sex) <- c( "F", "F", "M", "M", "U" )
 d$identifier <- gsub( ",", "", d$identifier )
 d$identifier <- as.numeric(d$identifier)
 d$disposition <- tolower(d$disposition)

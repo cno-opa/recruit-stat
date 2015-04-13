@@ -3,9 +3,9 @@
 
 #TODO: PROFIT
 
-require(jsonlite)
-require(RCurl)
-require(stringr)
+# require(jsonlite)
+# require(RCurl)
+# require(stringr)
 
 geocall <- function(zip) {
   api_key <- readLines(file("creds.txt"))

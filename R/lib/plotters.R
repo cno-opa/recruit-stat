@@ -30,7 +30,7 @@ theme_opa <- function (base_size = 14, base_family = "")
     rect = element_rect(fill = "white", colour = "black", size = 0.5, linetype = 1),
     text = element_text(family = base_family, face = "plain", colour = "black", size = base_size, hjust = 0.5, vjust = 0.5, angle = 0, lineheight = 0.9),
 
-    axis.text = element_text(size = rel(0.6), colour = "grey50"),
+    axis.text = element_text(size = rel(0.8), colour = "grey50"),
     strip.text = element_text(size = rel(0.8)),
     axis.line = element_blank(),
     axis.line.y = element_blank(),
@@ -212,7 +212,7 @@ lineOPA <- function(data, x, y, title = "Title!", group = 1, percent = FALSE, la
   return(base)
 }
 
-barOPA <- function(data, x, y, title = "Title", stat = "identity", position = "identity", ...) {
+barOPA <- function(data, x, y, title = "Title", stat = "identity", position = "identity", percent = FALSE, ...) {
   # set fill with `fill = "variable"` if you have multiple groups
   # set y-axis label with `ylab = "label"`
   # set data labels with `labels = "label_column"`
@@ -230,6 +230,18 @@ barOPA <- function(data, x, y, title = "Title", stat = "identity", position = "i
           geom_bar(stat = stat, position = position) +
           labs(title = title, y = "", x = "") +
           scale_y_continuous(breaks = brks) + expand_limits(y = c(0, yul))
+
+  if(percent == TRUE) {
+    ymax <- ymax * 100
+    brks <- (pretty_breaks(4, min.n = 4)(0:ymax))/100
+    for(i in 1:length(brks)) {
+      if(brks[i] > 1) {
+        brks[i] <- 1
+      }
+    }
+    brks <- unique(brks)
+    base <- base + scale_y_continuous(breaks = brks, labels = percent(brks)) + expand_limits(y = c(0, brks[length(brks)]))
+  }
 
   if( !is.null(dots$ylab) ) {
     base <- base + labs(y = dots$ylab)

@@ -1,13 +1,7 @@
 #plot.R
 #makes charts from analysis data objects
 
-#TODO: make a theme
-
-require(ggplot2)
-require(scales)
-require(reshape2)
-require(lubridate)
-require(dplyr)
+#TODO: PROFIT
 
 init_plot <- function() {
 #
@@ -47,14 +41,22 @@ steps$step <- step_names
 steps$period <- properize(steps$period)
 
 #charts
+
+theme_set(theme_opa())
+
+# step_hist <- function() {
+#   ggplot(data = steps[steps$step != "Applied",], aes(x = step, y = prop, fill = period)) +
+#     geom_bar(stat = "identity", position = position_dodge(width = 0.7), width = 0.7) +
+#     theme(axis.text.x = element_text(angle = 45, hjust = .97)) +
+#     scale_fill_manual( name = "Cohorts", values = c("#FF726B","#82ACDB", "#225A98" ) ) +
+#     labs( title = "Individual step yields", x = "Steps", y = "Success rate" ) +
+#     ggsave("./output/rel-steps.png", width = 10, height = 5.5)
+#     cat("Saving individual step yields histogram...\n")
+# }
 step_hist <- function() {
-  ggplot(data = steps[steps$step != "Applied",], aes(x = step, y = prop, fill = period)) +
-    geom_bar(stat = "identity", position = position_dodge(width = 0.7), width = 0.7) +
-    theme(axis.text.x = element_text(angle = 45, hjust = .97)) +
-    scale_fill_manual( name = "Cohorts", values = c("#FF726B","#82ACDB", "#225A98" ) ) +
-    labs( title = "Individual step yields", x = "Steps", y = "Success rate" ) +
-    ggsave("./output/rel-steps.png", width = 10, height = 5.5)
-    cat("Saving individual step yields histogram...\n")
+  p <- barOPA(data = steps[steps$step != "Applied",], "step", "prop", "Individual step yields", fill = "period", position = "dodge", percent = TRUE)
+  p <- buildChart(p)
+  ggsave("./output/step-yields.png", plot = p, width = 7.42, height = 5.75)
 }
 
 apps <- function() {
@@ -93,21 +95,28 @@ apps <- function() {
             summarise(n = n())
 
   #monthly apps
-  ggplot(data = apps, aes(x = month, y = applications, group = 1, label = applications)) +
-    geom_line( colour = "#225A98", size = 1 ) +
-    geom_text( size = 3, vjust = -.9, hjust = 1 ) +
-    theme(axis.text.x = element_text(angle = 45, hjust = .97)) +
-    labs( title = "Applications by month", x = "Month", y = "Applications" ) +
-    ggsave("./output/apps.png", width = 10, height = 5.5)
-    cat("Saving application line chart...\n")
+  # ggplot(data = apps, aes(x = month, y = applications, group = 1, label = applications)) +
+  #   geom_line( colour = "#225A98", size = 1 ) +
+  #   geom_text( size = 3, vjust = -.9, hjust = 1 ) +
+  #   theme(axis.text.x = element_text(angle = 45, hjust = .97)) +
+  #   labs( title = "Applications by month", x = "Month", y = "Applications" ) +
+  #   ggsave("./output/apps.png", width = 10, height = 5.5)
+  #   cat("Saving application line chart...\n")
+
+  p_apps <- lineOPA(apps, "month", "applications", "Applications by month", labels = "applications", last_label = FALSE)
+  p_apps <- buildChart(p_apps)
+  ggsave("./output/apps-monthly.png", plot = p_apps, width = 7.42, height = 5.75)
 
   #daily apps
-  ggplot(data = apps_d, aes(x = date_applied, y = n, group = 1)) +
-    geom_line( colour = "#225A98", size = 1 ) +
-    geom_hline( aes(yintercept = mean(n)), colour = "#FF726B", linetype = "dashed" ) +
-    labs(title = "Applications by day", x = "Day", y = "Applications") +
-    ggsave("./output/apps-daily.png", width = 10, height = 5.5)
-    cat("Saving daily application line chart...\n")
+  # ggplot(data = apps_d, aes(x = date_applied, y = n, group = 1)) +
+  #   geom_line( colour = "#225A98", size = 1 ) +
+  #   geom_hline( aes(yintercept = mean(n)), colour = "#FF726B", linetype = "dashed" ) +
+  #   labs(title = "Applications by day", x = "Day", y = "Applications") +
+  #   ggsave("./output/apps-daily.png", width = 10, height = 5.5)
+  #   cat("Saving daily application line chart...\n")
+  p_d <- lineOPA(apps_d, "date_applied", "n", "Applications by day")
+  p_d <- buildChart(p_d)
+  ggsave("./output/apps-daily.png", plot = p_d, width = 7.42, height = 5.75)
 }
 
 geos <- function() {
@@ -157,10 +166,25 @@ geos <- function() {
     cat("Saving applicant geo line chart...\n")
 }
 
+cs_exams <- function() {
+  d <- filter(mc_outcomes, !is.na(attended))
+  l <- nrow(d)
+  d <- d[(l-10):l,] %>%
+       group_by(written_test) %>%
+       summarise(pcnt_attended = (attended/scheduled), pcnt_passed = (passed/attended)) %>%
+       melt(id.vars = "written_test")
+
+  d$written_test <- factor(format(d$written_test, "%b %d %Y"), levels = format(d$written_test, "%b %d %Y"))
+
+  p <- barOPA(d, "written_test", "value", "Multiple choice exam", fill = "variable", position = "dodge", percent = TRUE, legend.labels = c("Attended", "Passed"))
+  p <- buildChart(p)
+  ggsave("./output/mc-exam-outcomes.png", plot = p_d, width = 7.42, height = 5.75)
+}
+
 #execution
 step_hist()
 apps()
-geos()
+#geos()
 
 #
 #end init_plot
