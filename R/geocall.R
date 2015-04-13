@@ -6,7 +6,6 @@
 require(jsonlite)
 require(RCurl)
 require(stringr)
-require(xtermStyle)
 
 geocall <- function(zip) {
   api_key <- readLines(file("creds.txt"))
@@ -41,7 +40,7 @@ geoloop <- function(zips) {
 
   for(zip in zips) {
     geo <- append(geo, geocall(zip))
-    cat( style( paste("Geocoding", zip, "\n"), fg = 208 ) )
+    cat(paste("Geocoding", zip, "\n"))
   }
 
   return(geo)

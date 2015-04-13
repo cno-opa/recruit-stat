@@ -7,7 +7,6 @@
 require(lubridate)
 require(gdata)
 require(stringr)
-require(xtermStyle)
 
 init_clean <- function() {
 #
@@ -16,16 +15,16 @@ init_clean <- function() {
 #let user choose data file
 f <- list.files("./data", pattern = "*.xls")
 
-cat( style("Enter the number next to the Excel file you want to use: \n \n", fg = 208) )
+cat("Enter the number next to the Excel file you want to use: \n \n")
 for(i in 1:length(f)) {
-  cat( style(paste(i, f[i]), fg = 069), sep = "\n" )
+  cat(paste(i, f[i]), sep = "\n" )
 }
 
 n <- readLines("stdin", 1, warn=FALSE)
 n <- as.numeric(n)
 
 #load and clean
-cat( style(paste("Using", f[n], "\n \n", sep = " "), fg = 208) )
+cat(paste("Using", f[n], "\n \n", sep = " "))
 d <- read.xls( paste0("./data/", f[n]), na.strings = c("", "#N/A", "NA", "#DIV/0!"), strip.white = TRUE )
 d$X <- NULL
 d$X.1 <- NULL

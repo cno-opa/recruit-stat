@@ -6,7 +6,6 @@
 require(ggplot2)
 require(scales)
 require(reshape2)
-require(xtermStyle)
 require(lubridate)
 require(dplyr)
 
@@ -55,7 +54,7 @@ step_hist <- function() {
     scale_fill_manual( name = "Cohorts", values = c("#FF726B","#82ACDB", "#225A98" ) ) +
     labs( title = "Individual step yields", x = "Steps", y = "Success rate" ) +
     ggsave("./output/rel-steps.png", width = 10, height = 5.5)
-    cat( style( "Saving individual step yields histogram...\n", fg = 208) )
+    cat("Saving individual step yields histogram...\n")
 }
 
 apps <- function() {
@@ -69,7 +68,7 @@ apps <- function() {
     last_measured <- max(ymd(d$date_applied))
 
     if( (last_ndays - last_measured) > 5 ) {
-      cat( style("Projecting applications for latest month...\n", fg = 208))
+      cat("Projecting applications for latest month...\n")
       ratio <- as.numeric(format(last_measured, "%d"))/as.numeric(format(last_ndays, "%d"))
       projection <- round(apps$applications[nrow(apps)]/ratio)
       apps$applications[nrow(apps)] <- projection
@@ -100,7 +99,7 @@ apps <- function() {
     theme(axis.text.x = element_text(angle = 45, hjust = .97)) +
     labs( title = "Applications by month", x = "Month", y = "Applications" ) +
     ggsave("./output/apps.png", width = 10, height = 5.5)
-    cat( style( "Saving application line chart...\n", fg = 208) )
+    cat("Saving application line chart...\n")
 
   #daily apps
   ggplot(data = apps_d, aes(x = date_applied, y = n, group = 1)) +
@@ -108,7 +107,7 @@ apps <- function() {
     geom_hline( aes(yintercept = mean(n)), colour = "#FF726B", linetype = "dashed" ) +
     labs(title = "Applications by day", x = "Day", y = "Applications") +
     ggsave("./output/apps-daily.png", width = 10, height = 5.5)
-    cat( style( "Saving daily application line chart...\n", fg = 208) )
+    cat("Saving daily application line chart...\n")
 }
 
 geos <- function() {
@@ -133,7 +132,7 @@ geos <- function() {
     labs( title = "Applicant geography", x = "Geography", y = "Proportion of applicantions" ) +
     scale_fill_manual( name = "Cohorts", values = c("#FF726B","#82ACDB", "#225A98" ) ) +
     ggsave("./output/geos.png", width = 10, height = 5.5)
-    cat( style( "Saving applicant geo histogram...\n", fg = 208) )
+    cat("Saving applicant geo histogram...\n")
 
   #line
   l <- ymd(paste(
@@ -155,7 +154,7 @@ geos <- function() {
     labs( title = "Applicant geography", x = "Year and week", y = "Count of applications" ) +
     scale_colour_discrete(name = "Geographies")
     ggsave("./output/geos-line.png", width = 10, height = 5.5)
-    cat( style( "Saving applicant geo line chart...\n", fg = 208) )
+    cat("Saving applicant geo line chart...\n")
 }
 
 #execution
