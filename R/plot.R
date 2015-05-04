@@ -39,20 +39,12 @@ step_names <- factor( c("Applied",
 steps$step <- as.factor(steps$step)
 steps$step <- step_names
 steps$period <- properize(steps$period)
+steps$period <- factor(steps$period, levels = unique(steps$period))
 
 #charts
 
 theme_set(theme_opa())
 
-# step_hist <- function() {
-#   ggplot(data = steps[steps$step != "Applied",], aes(x = step, y = prop, fill = period)) +
-#     geom_bar(stat = "identity", position = position_dodge(width = 0.7), width = 0.7) +
-#     theme(axis.text.x = element_text(angle = 45, hjust = .97)) +
-#     scale_fill_manual( name = "Cohorts", values = c("#FF726B","#82ACDB", "#225A98" ) ) +
-#     labs( title = "Individual step yields", x = "Steps", y = "Success rate" ) +
-#     ggsave("./output/rel-steps.png", width = 10, height = 5.5)
-#     cat("Saving individual step yields histogram...\n")
-# }
 step_hist <- function() {
   p <- barOPA(data = steps[steps$step != "Applied",], "step", "prop", "Individual step yields", fill = "period", position = "dodge", percent = TRUE)
   p <- buildChart(p)

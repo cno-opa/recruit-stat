@@ -50,7 +50,7 @@ countSuccess <- function(data, period) {
 
   all         <-  filter(data, date_applied >= l, date_applied <= u)
   qual        <-  filter(data, date_applied >= l, date_applied <= u, disposition != "not qualified")
-  docs        <-  filter(qual, date_applied >= l, date_applied <= u, disposition != "documents needed")
+  docs        <-  filter(qual, date_applied >= l, date_applied <= u, disposition != "documents needed", disposition != "incomplete application")
   mc          <-  filter(docs, date_applied >= l, date_applied <= u, !is.na(written_test))
   mc_actual   <-  filter(mc, written_test <= max(data$date_applied))
   mc_attend   <-  filter(mc, date_applied >= l, date_applied <= u, m_c__result == "P" | m_c__result == "F")
