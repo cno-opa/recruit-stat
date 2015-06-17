@@ -109,6 +109,7 @@ apps <- function() {
   p_d <- lineOPA(apps_d, "date_applied", "n", "Applications by day")
   p_d <- buildChart(p_d)
   ggsave("./output/apps-daily.png", plot = p_d, width = 7.42, height = 5.75)
+  write.csv(apps_d, "./output/apps-daily.csv", row.names = FALSE)
 }
 
 geos <- function() {
