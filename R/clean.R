@@ -62,6 +62,42 @@ d$month_applied <- paste0( month(d$date_applied, label = TRUE), " ", year(d$date
 d$days_to_mc <- as.numeric( (ymd(d$written_test) - ymd(d$date_applied)), units = "days" )
 d$days_to_mc[d$days_to_mc < 0] <- NA
 
+# check for things that don't make sense
+d$errors <- NA
+
+for(i in 1:nrow(d)) {
+
+  # check if test result is missing or wrong given subsequent testing or sent to bg date
+  if( is.na(d$m_c__result[i]) & !is.na(d$w_e__result[i]) | is.na(d$m_c__result[i]) & !is.na(d$sent_to_background[i]) ) {
+    d$errors[i] <- "result"
+  }
+  if( !is.na(d$m_c__result[i]) & d$m_c__result[i] == "F" & !is.na(d$w_e__result[i]) | !is.na(d$m_c__result[i]) & d$m_c__result[i] == "F" & !is.na(d$sent_to_background[i]) ) {
+    d$errors[i] <- "result"
+  }
+  if( !is.na(d$w_e__result[i]) & d$w_e__result[i] == "F" & !is.na(d$agility_result[i]) & d$agility_result[i] == "P" | !is.na(d$w_e__result[i]) & d$w_e__result[i] == "F" & !is.na(d$sent_to_background[i]) ) {
+    d$errors[i] <- "result"
+  }
+
+  # check if dates make sense or are complete
+  if( !is.na(d$written_test[i]) ) {
+    if( !is.na(d$writing_exercise[i]) & d$writing_exercise[i] < d$written_test[i] ) {
+      d$errors[i] <- "date"
+    } else if( !is.na(d$date_applied[i]) & d$date_applied[i] > d$written_test[i] ) {
+      d$errors[i] <- "date"
+    } else if ( !is.na(d$agility_test[i]) & d$agility_test[i] < d$written_test[i]) {
+      d$errors[i] <- "date"
+    }
+  }
+
+  if( !is.na(d$writing_exercise[i]) ) {
+    if( !is.na(d$agility_test[i]) & d$agility_test[i] < d$writing_exercise[i] ) {
+      d$errors[i] <- "date"
+    }
+  }
+
+}
+
+
 #initialize and execute geocall for most recent 300 days (just for good measure) worth of applicants in lieu of full d$geo <- geoloop(d$zip)
 # d$geo <- NA
 # cutoff <- max(ymd(d$date_applied)) - days(120)
