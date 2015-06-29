@@ -11,3 +11,5 @@ venv/*
 *.docx
 *.pdf
 *.pptx
+*.pem
+doc.md

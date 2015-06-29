@@ -174,6 +174,33 @@ cs_exams <- function() {
   ggsave("./output/mc-exam-outcomes.png", plot = p, width = 7.42, height = 5.75)
 }
 
+cs_thruput <- function() {
+  x <- filter(d, disposition != "not qualified", disposition != "documents needed", disposition != "incomplete application") %>%
+       group_by(as.factor(as.yearmon(written_test))) %>%
+       summarise(pass_mc = sum(m_c__result == "P", na.rm = TRUE), pass_we = sum(w_e__result == "P", na.rm = TRUE))
+
+  names(x)[1] <- "date"
+  x <- filter(x, date %in% d$month_applied)
+  x <- melt(x)
+
+  p <- lineOPA(x, "date", "value", "Civil Service testing throughput", "variable", last_label = FALSE, labels = "value", legend.labels = c("Pass MC", "Pass WE"))
+  p <- buildChart(p)
+  ggsave("./output/cs-throughput.png", plot = p, width = 7.42, height = 5.75)
+}
+
+agil_throughput <- function() {
+  x <- filter(d, disposition != "not qualified", disposition != "documents needed", disposition != "incomplete application") %>%
+       group_by(as.factor(as.yearmon(agility_test))) %>%
+       summarise(pass = sum(agility_result == "P", na.rm = TRUE))
+
+  names(x)[1] <- "date"
+  x <- filter(x, date %in% d$month_applied)
+
+  p <- lineOPA(x, "date", "pass", "Applicants who pass agility", labels = "pass", last_label = FALSE)
+  p <- buildChart(p)
+  ggsave("./output/cs-agility-throughput.png", plot = p, width = 7.42, height = 5.75)
+}
+
 #execution
 step_hist()
 apps()
