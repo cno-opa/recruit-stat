@@ -33,6 +33,17 @@ init("R")
 init_clean()
 init_analysis()
 init_plot()
+prePost("2014-01-11")
+prePost("2014-06-07")
+prePost("2014-08-09")
+prePost("2014-08-24")
+prePost("2015-01-10")
+prePost("2014-01-11", n_days = 7)
+prePost("2014-06-07", n_days = 7)
+prePost("2014-08-09", n_days = 7)
+prePost("2014-08-24", n_days = 7)
+prePost("2015-01-10", n_days = 7)
+
 
 #final communiques
 init_comms()
