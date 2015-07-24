@@ -169,7 +169,7 @@ cs_exams <- function() {
 
   d$written_test <- factor(format(d$written_test, "%b %d %Y"), levels = format(d$written_test, "%b %d %Y"))
 
-  p <- barOPA(d, "written_test", "value", "Multiple choice exam", fill = "variable", position = "dodge", percent = TRUE, legend.labels = c("Attended", "Passed"))
+  p <- lineOPA(d, "written_test", "value", "Multiple choice exam", group = "variable", percent = TRUE, legend.labels = c("Attended", "Passed"), labels = "percent(value)")
   p <- buildChart(p)
   ggsave("./output/mc-exam-outcomes.png", plot = p, width = 7.42, height = 5.75)
 }
