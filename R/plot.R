@@ -174,6 +174,20 @@ cs_exams <- function() {
   ggsave("./output/mc-exam-outcomes.png", plot = p, width = 7.42, height = 5.75)
 }
 
+cs_exam_attendance <- function() {
+  d <- filter(mc_outcomes, !is.na(attended)) %>%
+       group_by(as.factor(as.yearmon(written_test))) %>%
+       summarise(scheduled = sum(scheduled), attended = sum(attended))
+
+  names(d) <- c("date", "scheduled", "attended")
+
+  d <- melt(d)
+
+  p <- lineOPA(d, "date", "value", "Multiple choice scheduling and attendance", group = "variable", labels = "value", legend.labels = c("Attended", "Passed"))
+  p <- buildChart(p)
+  ggsave("./output/cs-mc-schedule-attend.png", plot = p, width = 7.42, height = 5.75)
+}
+
 cs_thruput <- function() {
   d_ <- filter(d, disposition != "not qualified", disposition != "documents needed", disposition != "incomplete application") %>%
        group_by(as.factor(as.yearmon(written_test))) %>%
@@ -208,6 +222,7 @@ apps()
 cs_exams()
 cs_thruput()
 agil_thruput()
+cs_exam_attendance()
 
 #
 #end init_plot
