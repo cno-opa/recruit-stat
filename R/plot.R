@@ -183,7 +183,7 @@ cs_exam_attendance <- function() {
 
   d <- melt(d)
 
-  p <- lineOPA(d, "date", "value", "Multiple choice scheduling and attendance", group = "variable", labels = "value", legend.labels = c("Attended", "Passed"))
+  p <- lineOPA(d, "date", "value", "Multiple choice scheduling and attendance", group = "variable", labels = "value", legend.labels = c("Scheduled", "Attended"))
   p <- buildChart(p)
   ggsave("./output/cs-mc-schedule-attend.png", plot = p, width = 7.42, height = 5.75)
 }
