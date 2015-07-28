@@ -160,32 +160,30 @@ geos <- function() {
 }
 
 cs_exams <- function() {
-  d <- filter(mc_outcomes, !is.na(attended))
-  l <- nrow(d)
-  d <- d[(l-10):l,] %>%
-       group_by(written_test) %>%
-       summarise(pcnt_attended = (attended/scheduled), pcnt_passed = (passed/attended)) %>%
-       melt(id.vars = "written_test")
+  d <- filter(mc_outcomes, !is.na(attended), written_test > ymd("2014-01-01")) %>%
+       group_by(as.factor(as.yearmon(written_test))) %>%
+       summarise(pcnt_attended = (sum(attended)/sum(scheduled)), pcnt_passed = (sum(passed)/sum(attended)))
 
-  d$written_test <- factor(format(d$written_test, "%b %d %Y"), levels = format(d$written_test, "%b %d %Y"))
+  names(d)[1] <- "date"
+  d <- melt(d)
 
-  p <- lineOPA(d, "written_test", "value", "Multiple choice exam", group = "variable", percent = TRUE, legend.labels = c("Attended", "Passed"), labels = "percent(value)")
+  p <- lineOPA(d, "date", "value", "Multiple choice exam", group = "variable", percent = TRUE, legend.labels = c("Attended", "Passed"), labels = "percent(value)")
   p <- buildChart(p)
-  ggsave("./output/mc-exam-outcomes.png", plot = p, width = 7.42, height = 5.75)
+  ggsave("./output/cs-mc-exam-pcts.png", plot = p, width = 7.42, height = 5.75)
 }
 
 cs_exam_attendance <- function() {
-  d <- filter(mc_outcomes, !is.na(attended)) %>%
+  d <- filter(mc_outcomes, !is.na(attended), written_test > ymd("2014-01-01")) %>%
        group_by(as.factor(as.yearmon(written_test))) %>%
-       summarise(scheduled = sum(scheduled), attended = sum(attended))
+       summarise(scheduled = sum(scheduled), attended = sum(attended), passed = sum(passed))
 
-  names(d) <- c("date", "scheduled", "attended")
+  names(d) <- c("date", "scheduled", "attended", "passed")
 
   d <- melt(d)
 
-  p <- lineOPA(d, "date", "value", "Multiple choice scheduling and attendance", group = "variable", labels = "value", legend.labels = c("Scheduled", "Attended"))
+  p <- lineOPA(d, "date", "value", "Multiple choice testing", group = "variable", labels = "value", legend.labels = c("Scheduled", "Attended", "Passed"))
   p <- buildChart(p)
-  ggsave("./output/cs-mc-schedule-attend.png", plot = p, width = 7.42, height = 5.75)
+  ggsave("./output/cs-mc-exam-n.png", plot = p, width = 7.42, height = 5.75)
 }
 
 cs_thruput <- function() {
