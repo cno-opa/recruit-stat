@@ -213,6 +213,19 @@ agil_thruput <- function() {
   ggsave("./output/cs-agility-throughput.png", plot = p, width = 7.42, height = 5.75)
 }
 
+send_to_bg <- function() {
+  d_ <- filter(d) %>%
+       group_by(as.factor(as.yearmon(sent_to_background))) %>%
+       summarise(n = n())
+
+  names(d_)[1] <- "date"
+  d_ <- filter(d_, complete.cases(d_))
+
+  p <- lineOPA(d_, "date", "n", "Applicants sent to background", labels = "n")
+  p <- buildChart(p)
+  ggsave("./output/cs-sent-to-bg.png", plot = p, width = 7.42, height = 5.75)
+}
+
 #execution
 step_hist()
 apps()
@@ -221,6 +234,7 @@ cs_exams()
 cs_thruput()
 agil_thruput()
 cs_exam_attendance()
+send_to_bg()
 
 #
 #end init_plot
